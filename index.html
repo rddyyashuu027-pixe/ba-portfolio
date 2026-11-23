@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yeshaswi · Business Analyst</title>
+<meta name="description" content="Business Analyst in banking, payments and risk. Case studies with SQL, Python and Power BI on ACH returns, card disputes, reconciliation, onboarding and claim denials.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000000; --surface:#0b0d12; --surface-2:#12161f; --ink:#e8edf5; --ink-2:#8d97a8; --line:#1d2330;
+  --navy:#9cc3ff; --teal:#3b82f6; --teal-soft:rgba(59,130,246,.14); --red:#f87171; --red-soft:rgba(248,113,113,.12);
+  --amber:#fbbf24; --grey:#2b3240; --glow:rgba(59,130,246,.35);
+  --shadow:0 0 0 1px rgba(255,255,255,.02),0 12px 30px rgba(0,0,0,.55);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+section,header{scroll-margin-top:110px}
+nav .links a.active{color:var(--ink)}
+nav .links a{position:relative}nav .links a.active::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--teal);border-radius:2px}
+body{background:var(--bg);background-image:radial-gradient(900px 500px at 75% -5%,rgba(59,130,246,.18),transparent 60%),linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:auto,44px 44px,44px 44px;background-attachment:fixed;color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--teal);text-decoration:none} a:hover{text-decoration:underline}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.mono{font-family:"IBM Plex Mono",monospace}
+nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+nav .brand{font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+nav .links{display:flex;gap:18px;font-size:14px;align-items:center}
+nav .links a{color:var(--ink-2)} nav .links a:hover{color:var(--ink);text-decoration:none}
+@media (max-width:720px){nav .links a.hide-sm{display:none}}
+
+.tape{border-bottom:1px solid var(--line);background:#05070b;overflow:hidden;white-space:nowrap;font:500 12.5px "IBM Plex Mono",monospace}
+.tape .run{display:inline-flex;gap:34px;padding:8px 0;animation:tape 38s linear infinite}
+.tape span b{color:var(--ink);font-weight:500} .tape .dn{color:#60a5fa} .tape .up{color:#60a5fa}
+.tape span{color:var(--ink-2)}
+@keyframes tape{to{transform:translateX(-50%)}}
+.card,.case,.dash{position:relative;overflow:hidden}
+.card::before,.case::before,.dash::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(380px circle at var(--mx,50%) var(--my,50%),rgba(59,130,246,.10),transparent 60%)}
+.card:hover::before,.case:hover::before,.dash:hover::before{opacity:1}
+.hello{font:500 14px "IBM Plex Mono",monospace;color:var(--ink-2);margin-top:18px}
+.mailwrap{position:relative;display:inline-block}
+.btn[data-mail]{cursor:pointer;font-family:inherit}
+.mailmenu{position:absolute;left:0;top:calc(100% + 8px);z-index:30;min-width:240px;background:#0b0f17;border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 16px 40px rgba(0,0,0,.6),0 0 24px rgba(59,130,246,.15);
+  opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .18s,transform .18s}
+.mailwrap.open .mailmenu{opacity:1;transform:none;pointer-events:auto}
+.mailmenu .addr{font:500 12.5px "IBM Plex Mono",monospace;color:var(--ink-2);padding:8px 10px 6px}
+.mailmenu button,.mailmenu a{display:block;width:100%;text-align:left;background:none;border:0;color:var(--ink);font:500 14px Inter,sans-serif;padding:9px 10px;border-radius:8px;cursor:pointer}
+.mailmenu button:hover,.mailmenu a:hover{background:var(--teal-soft);text-decoration:none}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--teal);color:#fff;font:600 14px Inter,sans-serif;padding:10px 16px;border-radius:10px;box-shadow:0 0 24px var(--glow);opacity:0;transition:opacity .2s,transform .2s;z-index:60;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+/* hero */
+.hero{padding:72px 0 40px;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+@media (max-width:900px){.hero{grid-template-columns:1fr;padding-top:40px}}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:600;color:var(--teal);background:var(--teal-soft);padding:4px 12px;border-radius:99px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--teal);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--teal) 60%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+h1{font-size:clamp(36px,6vw,58px);line-height:1.05;letter-spacing:-.035em;margin:18px 0 14px;font-weight:800}
+h1 .grad{background:linear-gradient(90deg,var(--navy),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:18px;color:var(--ink-2);max-width:560px}
+.typed{color:var(--ink);font-weight:600;border-right:2px solid var(--teal);padding-right:2px;animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{border-color:transparent}}
+.cta{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:10px;font-weight:600;font-size:15px;border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:var(--shadow);transition:transform .15s}
+.btn:hover{transform:translateY(-2px);text-decoration:none}
+.btn.primary{background:var(--teal);color:#fff;border-color:var(--teal);box-shadow:0 0 24px var(--glow)}
+
+.dash{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px;position:relative}
+.dash-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--ink-2);margin-bottom:12px}
+.live{display:inline-flex;align-items:center;gap:6px;color:var(--teal);font-weight:600}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--surface-2);border-radius:12px;padding:12px}
+.kpi .lab{font-size:11.5px;color:var(--ink-2);line-height:1.3}
+.kpi .val{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+.kpi .delta{font-size:12px;font-weight:600;color:var(--teal)}
+.kpi svg{display:block;width:100%;height:34px;margin-top:4px}
+.spark{fill:none;stroke:var(--teal);stroke-width:2;stroke-dasharray:300;stroke-dashoffset:300;animation:draw 2.2s .4s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* sections */
+section{padding:64px 0}
+.sec-tag{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;line-height:1.15;margin:8px 0 12px}
+h3{font-size:20px;letter-spacing:-.01em;margin-bottom:6px}
+.sub{color:var(--ink-2);max-width:720px}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* method flow */
+.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:30px;position:relative}
+@media (max-width:900px){.flow{grid-template-columns:repeat(2,1fr)}}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;box-shadow:var(--shadow)}
+.step .n{font:500 12px "IBM Plex Mono",monospace;color:var(--teal)}
+.step b{display:block;margin:4px 0}
+.step p{font-size:13px;color:var(--ink-2);line-height:1.45}
+.step::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--teal);border-radius:0 0 0 14px;transition:width .6s}
+.flow.in .step::after{width:100%}
+.flow.in .step:nth-child(2)::after{transition-delay:.25s}.flow.in .step:nth-child(3)::after{transition-delay:.5s}
+.flow.in .step:nth-child(4)::after{transition-delay:.75s}.flow.in .step:nth-child(5)::after{transition-delay:1s}.flow.in .step:nth-child(6)::after{transition-delay:1.25s}
+
+/* impact */
+.impact{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+@media (max-width:900px){.impact{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.co{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.co .when{font-size:12px;color:var(--ink-2)}
+.role{font-size:13px;color:var(--ink-2);margin-bottom:14px}
+.ba{margin:12px 0}
+.ba .t{font-size:13px;display:flex;justify-content:space-between;gap:8px}
+.ba .t span:last-child{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:5px;position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;width:0;border-radius:99px;transition:width 1.3s cubic-bezier(.2,.8,.2,1)}
+.bar i.before{background:var(--grey)} .bar i.after{background:var(--teal);height:4px;top:2px}
+
+/* case studies */
+.case{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:clamp(18px,4vw,36px);margin-top:28px}
+.case-head{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--surface-2);color:var(--ink-2)}
+.chip.hl{background:var(--teal-soft);color:var(--teal)}
+.psr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+@media (max-width:820px){.psr{grid-template-columns:1fr}}
+.psr div{border-left:3px solid var(--line);padding:4px 0 4px 14px}
+.psr div:nth-child(1){border-color:var(--red)} .psr div:nth-child(2){border-color:var(--amber)} .psr div:nth-child(3){border-color:var(--teal)}
+.psr>div>b{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.psr p b{color:var(--navy)}
+.psr p{font-size:15px;margin-top:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:10px}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+.panel{background:var(--surface-2);border-radius:14px;padding:16px;min-width:0}
+.panel h4{font-size:14px;margin-bottom:2px}
+.panel .note{font-size:12.5px;color:var(--ink-2);margin-bottom:10px}
+svg.chart{width:100%;height:auto;display:block;overflow:visible}
+svg.chart text{fill:var(--ink-2);font:11px Inter,sans-serif}
+svg.chart .lbl{fill:var(--ink);font-weight:600}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:6px 9px;border-radius:6px;opacity:0;transition:opacity .12s;z-index:50;max-width:240px}
+.sim{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:center;margin-top:22px}
+@media (max-width:820px){.sim{grid-template-columns:1fr}}
+.slider{margin:14px 0}
+.slider label{display:flex;justify-content:space-between;font-size:14px;font-weight:600}
+.slider label span{color:var(--teal);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;margin:12px 0 4px;border-radius:99px;cursor:grab;
+  background:linear-gradient(90deg,var(--teal) 0 var(--p,50%),#232a38 var(--p,50%) 100%);outline:none}
+input[type=range]:active{cursor:grabbing}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid var(--teal);box-shadow:0 0 0 6px rgba(59,130,246,.18),0 0 18px var(--glow);transition:transform .15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:4px solid var(--teal);box-shadow:0 0 18px var(--glow)}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 8px rgba(59,130,246,.35)}
+.scale{display:flex;justify-content:space-between;font:11px "IBM Plex Mono",monospace;color:var(--ink-2)}
+.try{display:inline-flex;align-items:center;gap:6px;margin-left:8px;font:600 11px Inter,sans-serif;color:#fff;background:var(--teal);padding:2px 9px;border-radius:99px;vertical-align:middle;animation:nudge 1.6s ease-in-out infinite}
+.used .try{animation:none;opacity:0;transition:opacity .4s}
+@keyframes nudge{0%,100%{box-shadow:0 0 0 0 var(--glow)}50%{box-shadow:0 0 0 7px transparent}}
+.bump{animation:bump .35s ease}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.08);color:#93c5fd}100%{transform:scale(1)}}
+.val,.big{display:inline-block;transform-origin:left center}
+.cmp{margin-top:8px}.cmp .row{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink-2);margin-top:4px}
+.cmp .row span:first-child{width:38px}.cmp .track{flex:1;height:6px;border-radius:99px;background:#1b2130;overflow:hidden}
+.cmp .track i{display:block;height:100%;border-radius:99px;transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.cmp .now i{background:#3a4356}.cmp .aft i{background:var(--teal)}
+.out{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.out .kpi .val{font-size:24px}
+.big{font-size:40px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.pos{color:var(--teal)} .neg{color:var(--red)}
+.callout{margin-top:18px;background:var(--teal-soft);border-radius:12px;padding:14px 16px;font-size:14.5px}
+.callout b{color:var(--teal)}
+.links-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px;font-weight:600;font-size:14px}
+
+/* process animation */
+.pmap{margin-top:8px}
+.pmap .node rect{fill:#0d1118;stroke:#2a3242}
+.pmap .node text{fill:var(--ink);font:600 11px Inter,sans-serif}
+.pmap .node.bad rect{stroke:var(--red);fill:#1c1013}
+.pmap .node.good rect{stroke:var(--teal);fill:#0c1730}
+.pmap path{fill:none;stroke:var(--grey);stroke-width:2}
+.pmap path.loop{stroke:var(--red);stroke-dasharray:5 5;animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-20}}
+.tabs{display:inline-flex;background:#06080c;border:1px solid var(--line);border-radius:12px;padding:4px;margin:6px 0 10px;position:relative}
+.tabs button{border:0;background:none;padding:8px 16px;border-radius:9px;font:600 13.5px Inter,sans-serif;color:var(--ink-2);cursor:pointer;transition:background .25s,color .25s,box-shadow .25s}
+.tabs button:hover{color:var(--ink)}
+.tabs button.on{background:var(--teal);color:#fff;box-shadow:0 0 18px var(--glow)}
+#pmap{transition:opacity .25s}
+.flowstat{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}.flowstat span{font:500 12px 'IBM Plex Mono',monospace;background:#06080c;border:1px solid var(--line);border-radius:8px;padding:4px 8px;color:var(--ink-2)}.flowstat b{color:var(--ink)}
+
+/* project grid */
+.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:28px}
+@media (max-width:820px){.pgrid{grid-template-columns:1fr}}
+.pcard{display:flex;flex-direction:column;gap:8px;transition:transform .2s}
+.pcard:hover{transform:translateY(-4px)}
+.pcard svg{width:100%;height:120px;margin:6px 0}
+.pcard svg text{font:11px Inter,sans-serif;fill:var(--ink-2)}.pcard svg .lbl{fill:var(--ink);font-weight:600}
+.pcard p{font-size:14.5px;color:var(--ink-2)}
+.stat{font-size:14px} .stat b{color:var(--teal)}
+
+.skills{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px}
+@media (max-width:900px){.skills{grid-template-columns:repeat(2,1fr)}}
+.skills .card h4{font-size:14px;margin-bottom:8px}
+.skills .card div{display:flex;flex-wrap:wrap;gap:6px}
+footer{border-top:1px solid var(--line);padding:40px 0 60px;margin-top:40px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+.disclaimer{font-size:12.5px;color:var(--ink-2);max-width:640px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.spark{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<nav><div class="wrap">
+  <a class="brand" href="#top">Yeshaswi</a>
+  <div class="links">
+    <a class="hide-sm" href="#method">Method</a>
+    <a class="hide-sm" href="#impact">Impact</a>
+    <a href="#ach">Case studies</a>
+    <a href="#invest">Investing</a>
+    <a class="hide-sm" href="#projects">Projects</a>
+  </div>
+</div></nav>
+<div class="tape" aria-label="Results ticker"><div class="run" id="tape"></div></div>
+
+<header class="wrap hero" id="top">
+  <div>
+    <span class="eyebrow"><span class="dot"></span>Business Analyst · banking, payments &amp; wealth</span>
+    <p class="hello">hi, I'm Yeshaswi 👋</p>
+    <h1>I dig into the numbers ops teams <span class="grad">worry about</span>.</h1>
+    <p class="lede">I've been a business analyst for 4+ years at TD Bank, Bank of America and Cerner. Most days I'm in SQL figuring out why a number moved, then sitting with ops and tech to change the process behind it. Lately that's been <span class="typed" id="typed">ACH returns</span></p>
+    <div class="cta">
+      <a class="btn primary" href="#ach">See case studies ↓</a>
+      <a class="btn" data-gh="" href="#">GitHub ↗</a>
+      <div class="mailwrap">
+        <button class="btn" type="button" data-mail aria-haspopup="true" aria-expanded="false">Email ✉</button>
+        <div class="mailmenu" role="menu">
+          <div class="addr">rddyyashuu027@gmail.com</div>
+          <button type="button" data-copy role="menuitem">⧉ Copy email</button>
+          <a role="menuitem" target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&fs=1&to=rddyyashuu027@gmail.com&su=Hi%20Yeshaswi">✉ Open in Gmail</a>
+          <a role="menuitem" href="mailto:rddyyashuu027@gmail.com">↗ Open mail app</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dash reveal" aria-label="Headline results">
+    <div class="dash-head"><span>a few results from work · before → after</span><span class="live"><span class="dot"></span>KPI view</span></div>
+    <div class="kpis">
+      <div class="kpi"><div class="lab">ACH return rate</div><div class="val"><span data-count="2.2" data-from="2.8" data-dec="1">2.8</span>%</div><div class="delta">▼ from 2.8%</div><svg viewBox="0 0 120 34"><path class="spark" d="M0 8 L20 9 L40 7 L60 14 L80 20 L100 24 L120 26"/></svg></div>
+      <div class="kpi"><div class="lab">Median dispute resolution</div><div class="val"><span data-count="10.1" data-from="12.4" data-dec="1">12.4</span>d</div><div class="delta">▼ from 12.4 days</div><svg viewBox="0 0 120 34"><path class="spark" d="M0 6 L20 8 L40 6 L60 12 L80 18 L100 21 L120 23"/></svg></div>
+      <div class="kpi"><div class="lab">Preventable claim denials</div><div class="val"><span data-count="7.2" data-from="8.6" data-dec="1">8.6</span>%</div><div class="delta">▼ from 8.6%</div><svg viewBox="0 0 120 34"><path class="spark" d="M0 7 L20 6 L40 10 L60 13 L80 16 L100 22 L120 24"/></svg></div>
+      <div class="kpi"><div class="lab">Weekly reporting hours</div><div class="val"><span data-count="5" data-from="11" data-dec="0">11</span>h</div><div class="delta">▼ from 11 hours</div><svg viewBox="0 0 120 34"><path class="spark" d="M0 4 L20 5 L40 9 L60 16 L80 22 L100 26 L120 27"/></svg></div>
+    </div>
+  </div>
+</header>
+
+<section id="method"><div class="wrap">
+  <div class="reveal"><div class="sec-tag">How I work</div><h2>How a project usually goes for me</h2>
+  <p class="sub">It almost always starts with someone saying "this number looks bad." I try not to jump straight to a dashboard. I'd rather find out what's actually happening first, then build only what helps people act on it.</p></div>
+  <div class="flow reveal" id="flow">
+    <div class="step"><span class="n">01</span><b>Frame</b><p>"Returns are high" isn't a question yet. I pin down who owns it and what good looks like.</p></div>
+    <div class="step"><span class="n">02</span><b>Measure</b><p>Pull the baseline in SQL and get everyone to count the same way.</p></div>
+    <div class="step"><span class="n">03</span><b>Diagnose</b><p>Slice it until the pattern shows up. It's usually one segment, not the whole book.</p></div>
+    <div class="step"><span class="n">04</span><b>Size</b><p>Before anyone builds anything, I estimate what the fix is worth and where it stops paying off.</p></div>
+    <div class="step"><span class="n">05</span><b>Specify</b><p>Write it up so tech can build it: BRD, stories, acceptance criteria, UAT.</p></div>
+    <div class="step"><span class="n">06</span><b>Monitor</b><p>Keep watching after launch. Plenty of fixes quietly stop working.</p></div>
+  </div>
+</div></section>
+
+<section id="impact"><div class="wrap">
+  <div class="reveal"><div class="sec-tag">Experience</div><h2>What changed while I was there</h2><p class="sub">Grey is before, blue is after. These were team efforts. My part was usually finding the cause and making the case for the fix.</p></div>
+  <div class="impact">
+    <div class="card reveal"><div class="co"><h3>TD Bank</h3><span class="when">2025 – now</span></div><div class="role">Business Analyst II · Payments Operations</div>
+      <div class="ba" data-b="2.8" data-a="2.2" data-max="3"><div class="t"><span>ACH return rate</span><span>2.8% → 2.2%</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+      <div class="ba" data-b="38" data-a="29" data-max="40"><div class="t"><span>Onboarding turnaround</span><span>38h → 29h</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+      <div class="ba" data-b="100" data-a="79" data-max="100"><div class="t"><span>Aged recon exceptions</span><span>−21%</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+      <div class="ba" data-b="11" data-a="5" data-max="12"><div class="t"><span>Weekly reporting</span><span>11h → 5h</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+    </div>
+    <div class="card reveal"><div class="co"><h3>Bank of America</h3><span class="when">2024 – 2025</span></div><div class="role">Operations Business Analyst · Consumer Card Disputes</div>
+      <div class="ba" data-b="12.4" data-a="10.1" data-max="13"><div class="t"><span>Median resolution</span><span>12.4d → 10.1d</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+      <div class="ba" data-b="9.1" data-a="7.4" data-max="10"><div class="t"><span>Dispute reopen rate</span><span>9.1% → 7.4%</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+      <div class="ba" data-b="100" data-a="84" data-max="100"><div class="t"><span>Low-priority reviews</span><span>−16%</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+      <div class="ba" data-b="17" data-a="10" data-max="18"><div class="t"><span>Forecast error (MAPE)</span><span>17% → 10%</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+    </div>
+    <div class="card reveal"><div class="co"><h3>Cerner</h3><span class="when">2021 – 2023</span></div><div class="role">Associate Business Analyst · Revenue Cycle</div>
+      <div class="ba" data-b="8.6" data-a="7.2" data-max="9"><div class="t"><span>Preventable denials</span><span>8.6% → 7.2%</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+      <div class="ba" data-b="94" data-a="97" data-max="100" data-up="1"><div class="t"><span>Reporting completeness</span><span>94% → 97%</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+      <div class="ba" data-b="4.8" data-a="3.7" data-max="5"><div class="t"><span>Exception aging</span><span>4.8d → 3.7d</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+      <div class="ba" data-b="9" data-a="4" data-max="10"><div class="t"><span>Weekly reporting prep</span><span>9h → 4h</span></div><div class="bar"><i class="before"></i><i class="after"></i></div></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- CASE STUDY 1 -->
+<section id="ach"><div class="wrap">
+  <div class="reveal"><div class="sec-tag">Case study 01 · Payments</div><h2>About 2.7% of ACH debits were bouncing back. Which of those could we actually stop?</h2></div>
+  <div class="case reveal">
+    <div class="case-head"><span class="chip hl">SQL</span><span class="chip hl">Python</span><span class="chip">NACHA return codes</span><span class="chip">Rule simulation</span><span class="chip">Break-even</span><span class="chip">623K synthetic entries</span></div>
+    <div class="psr">
+      <div><b>Problem</b><p>Every return means handling, a retry, and usually an annoyed customer on the phone. Nobody could say which ones were avoidable.</p></div>
+      <div><b>Diagnosis</b><p>Two-thirds are insufficient funds (R01), and we can't fix people's balances. But closed and invalid account returns pile up on <b>first debits to accounts nobody checked</b>.</p></div>
+      <div><b>Solution</b><p>Check the account once, before the first debit. People who already pay us never notice. It's worth it as long as a return costs us more than <b>$3.85</b>.</p></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h4>Return code Pareto</h4><div class="note">Red ones are the preventable codes. Hover for details.</div><svg class="chart" id="pareto" viewBox="0 0 460 250"></svg></div>
+      <div class="panel"><h4>Root cause: first debits, by validation</h4><div class="note">Total return rate on first debits</div><svg class="chart" id="segments" viewBox="0 0 460 250"></svg></div>
+    </div>
+    <div class="sim">
+      <div class="panel">
+        <h4>Play with the business case <span class="try">↔ drag the sliders</span></h4><div class="note">Finance and ops never agree on what one return really costs, so here's the whole range.</div>
+        <div class="slider"><label>All-in cost per return <span id="costv">$10.00</span></label><input id="cost" type="range" min="2" max="30" step="0.5" value="10"><div class="scale"><span>$2</span><span>$30</span></div></div>
+        <div class="slider"><label>Validation fee per check <span id="feev">$0.20</span></label><input id="fee" type="range" min="0.05" max="0.6" step="0.01" value="0.2"></div>
+        <div class="slider"><label>Monthly first debits (scale) <span id="volv">6,658</span></label><input id="vol" type="range" min="2000" max="60000" step="500" value="6658"></div>
+      </div>
+      <div>
+        <div class="note" style="font-size:13px;color:var(--ink-2)">Annual net benefit</div>
+        <div class="big" id="net">$0</div>
+        <div class="out" style="margin-top:12px">
+          <div class="kpi"><div class="lab">Returns avoided / yr</div><div class="val" id="avoid">0</div></div>
+          <div class="kpi"><div class="lab">Break-even cost / return</div><div class="val" id="be">$0</div></div>
+        </div>
+        <div class="callout"><b>Honest take:</b> if you only count handling cost ($4.50), this barely breaks even. I'd take Finance the break-even table, not one big savings number, and let them choose the cost.</div>
+      </div>
+    </div>
+    <div class="links-row"><a data-gh="ach-return-rate-reduction" href="#">Code &amp; SQL ↗</a><a data-gh="ba-requirements-toolkit" href="#">BRD, RTM &amp; UAT for this change ↗</a></div>
+  </div>
+</div></section>
+
+<!-- CASE STUDY 2 -->
+<section id="disputes"><div class="wrap">
+  <div class="reveal"><div class="sec-tag">Case study 02 · Card operations</div><h2>Card disputes were slow, but the investigators weren't the problem.</h2></div>
+  <div class="case reveal">
+    <div class="case-head"><span class="chip hl">SQL</span><span class="chip hl">Python</span><span class="chip">Reg E / Reg Z</span><span class="chip">OLS delay model</span><span class="chip">Forecasting</span><span class="chip">57K synthetic cases</span></div>
+    <div class="psr">
+      <div><b>Problem</b><p>36% of disputes missed the 10-day SLA, about 6% got reopened, and the plan on the table was to hire more investigators.</p></div>
+      <div><b>Diagnosis</b><p>Every time we go back to the customer for documents it adds <b>2.3 days</b>. Every case sent to the wrong queue adds <b>2.8</b>. Surprisingly, <b>phone</b> claims were the worst for missing docs (43%), worse than the app.</p></div>
+      <div><b>Solution</b><p>Ask for the right documents up front, route by reason code, fast-track the 16% of small low-risk claims, and staff to a weekly forecast instead of gut feel.</p></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h4>Where the days go</h4><div class="note">Average resolution days by case path · darker = more cases</div><svg class="chart" id="drivers" viewBox="0 0 460 250"></svg></div>
+      <div class="panel">
+        <h4>Case flow <span class="try">click to compare</span></h4>
+        <div class="tabs" id="ptabs" role="tablist"><button class="on" data-s="now" role="tab" aria-selected="true">Today</button><button data-s="future" role="tab" aria-selected="false">After the fix</button></div>
+        <svg class="chart pmap" id="pmap" viewBox="0 0 460 210"></svg>
+        <div class="flowstat" id="flowstat"></div>
+      </div>
+    </div>
+    <div class="sim">
+      <div class="panel">
+        <h4>What if the fixes only half work? <span class="try">↔ drag me</span></h4><div class="note">Uses the day-costs from the regression. Drag to be as pessimistic as you like.</div>
+        <div class="slider"><label>Incomplete claims fixed by intake checklist <span id="f1v">57%</span></label><input id="f1" type="range" min="0" max="100" value="57"><div class="scale"><span>fixes nothing</span><span>fixes all</span></div></div>
+        <div class="slider"><label>Misroutes prevented by routing table <span id="f2v">70%</span></label><input id="f2" type="range" min="0" max="100" value="70"><div class="scale"><span>0%</span><span>100%</span></div></div>
+      </div>
+      <div class="out">
+        <div class="kpi"><div class="lab">Avg resolution days</div><div class="val" id="sdays">9.6</div><div class="delta" id="sdays2"></div><div class="cmp"><div class="row now"><span>today</span><div class="track"><i id="sdaysnow"></i></div></div><div class="row aft"><span>after</span><div class="track"><i id="sdaysbar"></i></div></div></div></div>
+        <div class="kpi"><div class="lab">Reopen rate</div><div class="val" id="sreo">5.9%</div><div class="delta" id="sreo2"></div></div>
+        <div class="kpi"><div class="lab">Investigator days saved / yr</div><div class="val" id="ssaved">0</div></div>
+        <div class="kpi"><div class="lab">Fast-track eligible</div><div class="val">16.4%</div><div class="delta">of cases, low risk</div></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:22px"><h4>Weekly intake forecast · 12-week backtest</h4><div class="note" id="fcnote"></div><svg class="chart" id="forecast" viewBox="0 0 920 220"></svg></div>
+    <div class="callout"><b>Something I learned:</b> the median barely moves, but the long, painful cases get much shorter. So I'd report average days and % over SLA, because that's what customers feel. Reg E/Z deadlines were never in danger (0 breaches).</div>
+    <div class="links-row"><a data-gh="card-dispute-backlog" href="#">Code &amp; SQL ↗</a></div>
+  </div>
+</div></section>
+
+<!-- CASE STUDY 3 -->
+<section id="invest"><div class="wrap">
+  <div class="reveal"><div class="sec-tag">Case study 03 · Wealth management</div><h2>The market went up. So why were "conservative" clients suddenly taking growth-level risk?</h2></div>
+  <div class="case reveal">
+    <div class="case-head"><span class="chip hl">SQL</span><span class="chip hl">Python</span><span class="chip">Equities</span><span class="chip">Rebalancing</span><span class="chip">Suitability</span><span class="chip">2,500 accounts · $1.75B</span></div>
+    <div class="psr">
+      <div><b>Problem</b><p>Each client has a model mix (Conservative 35% stocks, Moderate 60%, Growth 80%). Two strong years for stocks, and nobody really knew how far accounts had moved from those targets.</p></div>
+      <div><b>Diagnosis</b><p><b id="iv-oob">58%</b> of accounts are more than 5 points off target, and it lines up almost perfectly with how often the adviser rebalances. One stock that went up ~7x quietly became 19% of 524 accounts.</p></div>
+      <div><b>Solution</b><p>An automatic drift alert with a ready-made rebalance trade, a <i>separate</i> single-stock alert (rebalancing doesn't fix that one), and a monthly adviser scorecard.</p></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h4>Client book vs. the market</h4><div class="note">Indexed to 100 · hover to read any week</div><svg class="chart" id="bookline" viewBox="0 0 460 250"></svg></div>
+      <div class="panel"><h4>It comes down to the adviser's habit</h4><div class="note">% of accounts outside the ±5 pt band</div><svg class="chart" id="policy" viewBox="0 0 460 250"></svg></div>
+    </div>
+    <div class="sim">
+      <div class="panel">
+        <h4>Where would you set the alert? <span class="try">↔ drag me</span></h4><div class="note">Too tight and advisers drown in alerts. Too loose and clients drift. Each bar is a group of accounts by how far their stock weight is from target.</div>
+        <div class="slider"><label>Drift band (± points) <span id="bandv">5</span></label><input id="band" type="range" min="1" max="15" step="0.5" value="5"><div class="scale"><span>±1 tight</span><span>±15 loose</span></div></div>
+        <svg class="chart" id="drifthist" viewBox="0 0 460 170"></svg>
+      </div>
+      <div class="out">
+        <div class="kpi"><div class="lab">Accounts flagged</div><div class="val" id="iv-flag">0</div><div class="delta" id="iv-flag2"></div><div class="cmp"><div class="row aft"><span>share</span><div class="track"><i id="iv-flagbar"></i></div></div></div></div>
+        <div class="kpi"><div class="lab">Alerts per adviser</div><div class="val" id="iv-adv">0</div><div class="delta">40 advisers</div></div>
+        <div class="kpi"><div class="lab">Too risky, after alerts are worked</div><div class="val" id="iv-risk">14.0%</div><div class="delta" id="iv-risk2"></div></div>
+        <div class="kpi"><div class="lab">Single stock over 10%</div><div class="val" id="iv-conc">53%</div><div class="delta">rebalancing won't fix it</div></div>
+      </div>
+    </div>
+    <div class="callout"><b>The part I didn't expect:</b> rebalancing fixed the stock/bond mix and almost every volatility breach (14% → 0.5%), but the concentration problem didn't move at all. A rebalance just tops up the same stocks in the same proportions, so that one needs its own conversation with the client.</div>
+    <div class="links-row"><a data-gh="portfolio-drift-risk-monitor" href="#">Code &amp; SQL ↗</a></div>
+  </div>
+</div></section>
+
+<section id="projects"><div class="wrap">
+  <div class="reveal"><div class="sec-tag">More projects</div><h2>A few smaller ones</h2></div>
+  <div class="pgrid">
+    <a class="card pcard reveal" data-gh="payment-reconciliation-breaks" href="#" style="color:inherit;text-decoration:none">
+      <span class="chip hl" style="align-self:flex-start">Finance ops · SQL</span><h3>Payment Reconciliation Break Analyzer</h3>
+      <svg viewBox="0 0 400 120" id="recon"></svg>
+      <p>Matching transactions, settlement and the GL. The biggest pile of breaks is just timing, and it's harmless. The $48K that matters is duplicate and missing GL postings, and that's a tech bug.</p>
+    </a>
+    <a class="card pcard reveal" data-gh="account-onboarding-funnel" href="#" style="color:inherit;text-decoration:none">
+      <span class="chip hl" style="align-self:flex-start">Digital banking · SQL windows</span><h3>Account Onboarding Funnel</h3>
+      <svg viewBox="0 0 400 120" id="funnel"></svg>
+      <p>People don't drop out where you'd expect. The big leak is funding the account. Anyone stuck ~45 hours in manual KYC review is 9 points less likely to ever fund.</p>
+    </a>
+    <a class="card pcard reveal" data-gh="claim-denial-root-cause" href="#" style="color:inherit;text-decoration:none">
+      <span class="chip hl" style="align-self:flex-start">Healthcare RCM · X12 835</span><h3>Claim Denial Root Cause</h3>
+      <svg viewBox="0 0 400 120" id="denial"></svg>
+      <p>About 69% of denials could have been avoided. Missing info (CO-16) alone is 41%, and the ER has twice the missing-field rate of everyone else. Makes sense when registration is rushed.</p>
+    </a>
+    <a class="card pcard reveal" data-gh="ba-requirements-toolkit" href="#" style="color:inherit;text-decoration:none">
+      <span class="chip hl" style="align-self:flex-start">Requirements · BRD · UAT</span><h3>BA Requirements Toolkit</h3>
+      <svg viewBox="0 0 400 120" id="docs"></svg>
+      <p>The paperwork side of the ACH case: BRD, before and after process maps, traceability matrix, UAT cases and a KPI dictionary. Not glamorous, but it's what actually gets a change shipped.</p>
+    </a>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="reveal"><div class="sec-tag">Toolkit</div><h2>Tools I reach for</h2></div>
+  <div class="skills">
+    <div class="card reveal"><h4>Analysis</h4><div><span class="chip">SQL · CTEs · windows</span><span class="chip">Python · pandas</span><span class="chip">Excel</span><span class="chip">Forecasting</span></div></div>
+    <div class="card reveal"><h4>Reporting</h4><div><span class="chip">Power BI · DAX</span><span class="chip">Tableau</span><span class="chip">KPI design</span></div></div>
+    <div class="card reveal"><h4>Requirements</h4><div><span class="chip">BRD / FRD</span><span class="chip">User stories</span><span class="chip">UAT</span><span class="chip">BPMN</span><span class="chip">JIRA</span></div></div>
+    <div class="card reveal"><h4>Domain</h4><div><span class="chip">ACH / NACHA</span><span class="chip">Reg E / Reg Z</span><span class="chip">KYC / CIP</span><span class="chip">X12 837/835</span><span class="chip">Equities · rebalancing</span><span class="chip">Suitability</span></div></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div><b>Yeshaswi</b> · Herndon, VA<br><a href="#" data-copy title="Click to copy">rddyyashuu027@gmail.com</a> <span style="font-size:12px;color:var(--ink-2)">(click to copy)</span> · <a data-gh="" href="#">GitHub</a></div>
+  <p class="disclaimer">Quick note: the case-study data is made up, generated by scripts in each repo and modeled on public rules (NACHA, Reg E/Z, X12). No employer or customer data. The results in the experience section are from my actual jobs.</p>
+</div></footer>
+
+<script>
+const GH_USER = "rddyyashuu027-pixe";   // ← change once your new GitHub account exists
+const DATA = {"ach":{"pareto":[{"return_code":"R01","description":"Insufficient funds","return_category":"NSF","returns":11294,"share_pct":67.5,"cumulative_pct":67.5},{"return_code":"R03","description":"No account / unable to locate","return_category":"Administrative","returns":1402,"share_pct":8.4,"cumulative_pct":75.9},{"return_code":"R02","description":"Account closed","return_category":"Administrative","returns":1146,"share_pct":6.8,"cumulative_pct":82.7},{"return_code":"R04","description":"Invalid account number","return_category":"Administrative","returns":947,"share_pct":5.7,"cumulative_pct":88.4},{"return_code":"R10","description":"Customer advises not authorized","return_category":"Unauthorized","returns":662,"share_pct":4.0,"cumulative_pct":92.3},{"return_code":"R16","description":"Account frozen","return_category":"Other","returns":306,"share_pct":1.8,"cumulative_pct":94.2},{"return_code":"R20","description":"Non-transaction account","return_category":"Other","returns":297,"share_pct":1.8,"cumulative_pct":95.9},{"return_code":"R11","description":"Customer advises entry not in accordance with authorization","return_category":"Unauthorized","returns":232,"share_pct":1.4,"cumulative_pct":97.3},{"return_code":"R07","description":"Authorization revoked by customer","return_category":"Unauthorized","returns":188,"share_pct":1.1,"cumulative_pct":98.4},{"return_code":"R05","description":"Unauthorized consumer debit (corporate SEC)","return_category":"Unauthorized","returns":133,"share_pct":0.8,"cumulative_pct":99.2},{"return_code":"R29","description":"Corporate customer advises not authorized","return_category":"Unauthorized","returns":128,"share_pct":0.8,"cumulative_pct":100.0}],"segments":[{"origination_channel":"Online Enrollment","debit_type":"First debit","validation":"Not validated","entries":22109,"admin_returns":1133,"admin_return_pct":5.12,"total_return_pct":8.16},{"origination_channel":"Mobile App","debit_type":"First debit","validation":"Not validated","entries":10123,"admin_returns":537,"admin_return_pct":5.3,"total_return_pct":8.45},{"origination_channel":"Recurring Biller File","debit_type":"First debit","validation":"Not validated","entries":3778,"admin_returns":208,"admin_return_pct":5.51,"total_return_pct":8.13},{"origination_channel":"Phone Agent","debit_type":"First debit","validation":"Not validated","entries":3758,"admin_returns":172,"admin_return_pct":4.58,"total_return_pct":7.69},{"origination_channel":"Recurring Biller File","debit_type":"First debit","validation":"Validated","entries":21222,"admin_returns":78,"admin_return_pct":0.37,"total_return_pct":2.92},{"origination_channel":"Mobile App","debit_type":"First debit","validation":"Validated","entries":8218,"admin_returns":39,"admin_return_pct":0.47,"total_return_pct":3.24}],"sim":{"avoided_per_validation":0.05196495619524406}},"disputes":{"drivers":[{"intake":"Docs missing","routing":"Misrouted","cases":1512,"share_pct":2.6,"avg_days":17.9,"avg_evidence_requests":1.5,"reopen_rate_pct":15.1},{"intake":"Docs missing","routing":"Routed correctly","cases":7564,"share_pct":13.2,"avg_days":15.1,"avg_evidence_requests":1.5,"reopen_rate_pct":11.4},{"intake":"Docs complete","routing":"Misrouted","cases":4968,"share_pct":8.6,"avg_days":12.2,"avg_evidence_requests":0.0,"reopen_rate_pct":8.3},{"intake":"Docs complete","routing":"Routed correctly","cases":43415,"share_pct":75.6,"avg_days":8.1,"avg_evidence_requests":0.0,"reopen_rate_pct":4.4}],"forecast":{"accuracy":{"Naive (last week)":96.9,"4-week average":95.5,"Holt trend smoothing":97.9},"best":"Holt trend smoothing","weeks":["2024-07-08","2024-07-15","2024-07-22","2024-07-29","2024-08-05","2024-08-12","2024-08-19","2024-08-26","2024-09-02","2024-09-09","2024-09-16","2024-09-23","2024-09-30","2024-10-07","2024-10-14","2024-10-21","2024-10-28","2024-11-04","2024-11-11","2024-11-18","2024-11-25","2024-12-02","2024-12-09","2024-12-16","2024-12-23","2024-12-30","2025-01-06","2025-01-13","2025-01-20","2025-01-27","2025-02-03","2025-02-10","2025-02-17","2025-02-24","2025-03-03","2025-03-10","2025-03-17","2025-03-24","2025-03-31","2025-04-07","2025-04-14","2025-04-21","2025-04-28","2025-05-05","2025-05-12","2025-05-19","2025-05-26","2025-06-02","2025-06-09","2025-06-16","2025-06-23"],"actual":[834.0,910.0,858.0,829.0,906.0,879.0,909.0,939.0,953.0,966.0,979.0,999.0,995.0,1052.0,1092.0,1116.0,1087.0,1144.0,1220.0,1189.0,1219.0,1218.0,1321.0,1339.0,1297.0,1332.0,1310.0,1322.0,1349.0,1274.0,1223.0,1260.0,1279.0,1297.0,1243.0,1198.0,1168.0,1187.0,1169.0,1187.0,1098.0,1132.0,1108.0,1076.0,1013.0,1025.0,1041.0,978.0,973.0,966.0,943.0],"backtest":{"Naive (last week)":[1169,1187,1098,1132,1108,1076,1013,1025,1041,978,973,966],"4-week average":[1180,1178,1160,1146,1131,1104,1082,1056,1039,1014,1004,990],"Holt trend smoothing":[1162,1165,1118,1112,1097,1071,1023,1005,1007,974,955,943]},"investigator_fte_needed":50.3},"sim":{"cases":57459,"avg_days":9.6,"reopen":5.94,"missing_cases":9076,"misrouted_cases":6480,"misrouted_only":4968,"avg_evidence_requests":1.5,"coef_evidence":2.28,"coef_misroute":2.8,"reopen_missing":12.01639488761569,"reopen_misrouted":8.3,"reopen_clean":4.4}},"recon":[{"break_type":"Matched","items":58371,"pct":97.28,"dollar_exposure":0.0},{"break_type":"Timing / cutoff","items":468,"pct":0.78,"dollar_exposure":0.0},{"break_type":"Missing settlement","items":339,"pct":0.56,"dollar_exposure":33900.0},{"break_type":"Duplicate GL posting","items":331,"pct":0.55,"dollar_exposure":29196.0},{"break_type":"Amount mismatch","items":282,"pct":0.47,"dollar_exposure":2835.0},{"break_type":"Not posted to GL","items":209,"pct":0.35,"dollar_exposure":19242.0}],"denial":[{"carc":"CO-16","description":"Missing / invalid claim information","preventable":1,"denials":4136,"share_pct":41.2,"billed_at_risk":2765912.0},{"carc":"CO-197","description":"Precertification / authorization absent","preventable":1,"denials":1549,"share_pct":15.4,"billed_at_risk":978219.0},{"carc":"CO-50","description":"Not medically necessary","preventable":0,"denials":1185,"share_pct":11.8,"billed_at_risk":803303.0},{"carc":"CO-97","description":"Bundled into another service","preventable":0,"denials":1071,"share_pct":10.7,"billed_at_risk":705347.0},{"carc":"PR-1","description":"Patient deductible","preventable":0,"denials":821,"share_pct":8.2,"billed_at_risk":581794.0},{"carc":"CO-18","description":"Duplicate claim","preventable":1,"denials":727,"share_pct":7.2,"billed_at_risk":446679.0},{"carc":"CO-29","description":"Timely filing limit expired","preventable":1,"denials":552,"share_pct":5.5,"billed_at_risk":369029.0}],"funnel":[{"stage_no":0,"stage":"Application submitted","applicants":80000,"pct_of_start":100.0,"step_conversion_pct":NaN},{"stage_no":1,"stage":"Identity verified","applicants":68696,"pct_of_start":85.9,"step_conversion_pct":85.9},{"stage_no":2,"stage":"KYC / CIP review","applicants":61987,"pct_of_start":77.5,"step_conversion_pct":90.2},{"stage_no":3,"stage":"Account funded","applicants":48355,"pct_of_start":60.4,"step_conversion_pct":78.0},{"stage_no":4,"stage":"First transaction","applicants":42629,"pct_of_start":53.3,"step_conversion_pct":88.2}],"invest":{"summary":{"accounts":2500,"aum_musd":1752.6,"out_of_band_pct":58.1,"concentrated_pct":53.3,"too_risky_pct":14.0,"any_exception_pct":71.5,"aum_out_of_band_musd":1086.4,"after_rule_any_exception_pct":53.3,"after_rule_too_risky_pct":0.5,"conservative_overweight_equity_pct":62.3},"policy":[{"rebalance_policy":"Never","accounts":971,"avg_abs_drift_pts":10.6,"out_of_band":908,"out_of_band_pct":93.5},{"rebalance_policy":"Annual","accounts":693,"avg_abs_drift_pts":6.8,"out_of_band":543,"out_of_band_pct":78.4},{"rebalance_policy":"Quarterly","accounts":836,"avg_abs_drift_pts":0.7,"out_of_band":2,"out_of_band_pct":0.2}],"drift_points":[0.0,9.0,0.7,8.0,10.0,14.0,0.4,14.0,0.5,5.0,15.6,-0.1,0.5,1.0,10.6,7.1,5.0,5.8,1.7,0.3,12.8,14.4,6.5,7.9,6.9,13.8,-0.3,6.6,7.5,8.6,0.2,13.4,4.8,7.8,12.3,9.0,6.2,6.2,-0.1,7.6,-0.3,14.1,15.1,9.1,6.8,6.6,8.5,5.0,8.4,12.6,13.0,9.0,8.9,7.3,12.2,4.7,15.5,8.2,5.0,4.0,6.3,7.1,17.2,4.8,0.2,-1.7,1.5,5.2,4.1,0.0,7.9,6.9,11.2,15.2,5.4,14.9,-0.5,4.1,11.5,0.7,11.5,4.3,5.2,1.2,8.7,16.0,10.8,15.1,0.2,8.7,7.2,0.6,6.1,15.5,15.5,7.1,1.4,19.1,0.1,16.2,12.0,-0.5,9.7,4.5,8.6,5.0,7.4,6.0,1.4,-0.3,6.2,8.1,0.5,10.0,7.2,11.3,0.1,0.4,12.9,11.4,6.9,10.9,14.1,0.4,12.9,13.7,5.2,6.6,5.9,5.7,13.6,4.3,15.2,0.4,0.6,14.1,5.1,6.8,7.1,0.3,8.1,8.5,0.5,1.9,-0.0,4.8,10.0,8.6,0.6,9.1,9.8,3.4,5.7,5.9,12.6,6.5,8.3,13.3,8.9,8.5,7.9,-0.2,13.8,6.8,5.1,6.3,15.8,0.2,10.4,17.9,4.0,8.6,12.2,4.0,15.6,4.3,-0.1,-0.2,16.1,2.6,16.2,10.0,6.6,1.6,6.5,1.2,1.1,-0.6,8.1,6.5,13.4,7.4,11.7,4.9,4.3,16.7,0.2,15.3,9.0,0.1,10.5,7.6,10.3,2.1,8.1,-0.4,7.5,0.2,0.4,-0.4,6.5,-3.0,0.4,12.5,16.4,16.8,8.7,-0.1,16.5,0.3,10.1,5.5,6.0,9.8,0.2,0.8,-0.4,1.2,0.5,5.2,11.7,6.7,0.9,0.0,8.2,10.1,14.6,4.6,12.0,5.2,7.0,10.8,0.1,8.3,4.5,-0.0,8.0,6.2,8.5,3.7,0.9,-0.2,10.6,8.3,7.5,16.0,4.1,0.6,-0.3,0.7,7.7,0.6,15.9,8.1,1.7,0.5,14.0,-0.4,5.3,0.2,-0.4,17.2,10.8,6.9,5.0,-0.1,10.2,0.1,0.1,6.8,8.7,0.9,4.5,9.0,7.6,-0.2,-0.1,11.7,3.0,0.2,7.7,7.8,5.0,5.1,0.2,9.9,7.9,7.7,16.7,4.5,4.7,19.2,0.8,9.0,9.9,13.1,6.1,-1.1,15.1,6.5,5.2,6.9,18.9,7.0,7.4,-0.3,-0.2,-1.1,6.6,8.9,5.8,7.1,2.4,7.3,12.2,8.8,14.0,0.6,0.1,1.1,11.8,12.7,4.1,-0.2,-0.4,12.1,7.5,7.1,1.4,5.4,2.4,7.7,6.3,2.9,12.0,1.3,11.7,0.4,7.6,0.5,19.5,-0.1,0.3,7.4,6.1,5.1,-0.9,15.6,8.4,12.7,-1.2,6.2,10.9,23.8,5.0,1.3,12.8,0.5,0.5,6.4,7.3,0.8,13.8,0.0,0.1,5.8,7.1,9.4,17.3,4.8,0.2,6.7,4.8,0.4,13.4,5.1,-0.5,2.1,5.2,8.6,0.4,9.2,0.3,9.0,8.6,11.2,0.9,5.6,5.8,-1.5,1.2,1.8,0.1,0.2,9.2,0.8,9.3,10.0,0.5,8.2,0.4,8.2,-0.1,14.8,0.8,5.9,1.0,0.1,0.3,8.9,0.4,0.6,8.2,2.6,8.7,15.1,0.6,3.2,13.6,8.7,5.1,13.1,0.1,6.4,7.0,1.0,-1.1,8.0,0.7,6.8,8.4,12.4,-0.3,3.6,2.5,0.7,6.2,0.5,7.3,1.7,0.3,0.8,7.1,7.5,3.5,-1.2,0.2,0.6,5.5,0.5,11.1,-1.1,11.0,13.3,1.2,16.7,-0.8,7.2,7.5,16.2,3.8,0.4,6.3,0.5,7.8,8.4,9.2,-0.3,4.8,10.5,7.2,0.4,8.4,6.2,5.5,-0.2,0.2,16.7,12.3,-0.6,8.8,0.2,-0.0,0.3,3.8,7.9,8.3,0.5,3.0,8.8,4.6,7.9,15.5,3.9,6.9,-2.0,5.5,1.5,1.3,-1.0,0.0,4.6,6.2,6.8,12.9,-0.6,10.2,2.6,9.3,6.8,12.6,9.5,5.8,0.6,5.2,9.9,0.2,5.5,13.7,14.3,-0.1,-0.7,3.0,4.6,7.1,-0.3,1.1,0.5,-0.2,8.0,13.3,18.7,5.9,0.7,7.9,6.1,4.2,10.5,7.6,12.3,0.3,6.0,-0.3,3.3,1.6,10.3,5.0,4.5,8.5,-0.5,0.5,5.9,7.6,1.2,-0.1,7.6,4.4,0.7,6.5,4.6,9.0,4.5,4.0,6.8,0.7,0.9,15.0,17.5,14.3,20.9,10.4,1.3,0.1,15.6,17.8,9.3,0.3,9.4,9.5,15.7,0.3,0.4,9.2,15.7,0.3,1.9,-0.1,10.4,9.5,6.3,0.4,7.6,10.4,0.1,5.6,13.9,10.7,11.3,0.2,10.9,-0.4,14.1,0.2,11.1,4.7,14.8,15.9,15.7,4.7,0.2,14.6,6.5,0.8,-1.2,6.5,-1.0,13.4,-0.3,-0.6,-0.0,1.2,4.8,17.9,8.8,4.0,8.9,-0.1,11.1,6.7,3.0,-0.8,8.8,17.9,8.1,9.3,9.8,1.0,14.3,3.7,7.6,0.9,3.8,8.6,6.4,8.2,14.6,7.3,13.3,0.8,9.4,0.1,9.0,8.1,14.2,7.8,0.2,6.8,7.9,8.2,4.8,-2.1,3.2,5.0,4.0,6.4,9.9,7.3,15.5,13.1,0.7,-0.7,11.8,12.1,14.1,5.8,4.7,0.2,1.2,11.0,0.6,9.6,18.7,6.9,10.4,5.9,0.8,10.5,-0.0,19.5,7.7,1.4,0.7,10.3,11.9,0.5,7.8,2.0,7.9,0.4,0.2,15.0,9.6,5.9,-0.0,-0.5,15.8,7.2,-0.5,7.8,0.2,1.1,16.7,4.7,13.9,1.0,9.6,11.2,-0.1,-0.4,-0.5,1.4,8.3,9.1,10.3,1.7,11.9,-0.4,-1.1,11.4,8.6,0.4,0.4,8.0,1.1,9.6,2.9,12.6,4.0,0.3,8.9,4.2,7.1,3.3,8.2,13.0,8.5,-1.5,1.3,0.8,10.3,3.3,5.2,13.6,6.7,7.1,9.1,6.5,5.1,0.6,-0.5,6.8,6.6,0.5,2.9,0.1,5.6,0.2,0.1,-0.7,2.9,0.3,15.3,5.8,8.3,14.1,17.4,16.4,16.9,7.4,1.0,16.7,8.7,4.1,10.0,9.3,0.1,8.4,0.5,6.9,21.4,7.2,12.7,12.3,12.0,5.5,-0.1,0.6,9.1,6.0,15.2,4.0,-0.7,6.4,12.8,8.5,14.3,12.7,5.7,-0.7,6.6,1.5,6.5,15.7,1.0,4.2,9.9,-1.1,7.5,4.9,7.9,8.2,13.7,-1.1,14.9,-0.5,6.5,13.6,0.3,9.9,15.7,7.3,0.3,1.3,0.7,4.7,14.2,0.1,8.4,1.1,3.3,4.8,0.2,9.9,0.3,10.3,-0.4,12.1,3.8,3.1,11.6,1.1,8.6,7.3,18.1,1.0,7.9,7.2,19.9,10.8,7.1,11.2,0.4,7.5,5.1,4.8,8.5,7.4,0.1,0.5,-1.0,5.4,12.6,2.9,6.5,15.4,1.4,7.2,0.4,4.7,7.5,0.9,3.7,0.3,1.5,1.8,13.1,0.4,9.2,8.1,3.4,0.2,1.7,1.4,7.2,7.5,7.5,7.3,5.6,0.8,1.2,9.1,6.6,28.7,10.5,5.5,3.9,-0.3,6.7,7.0,1.4,10.7,8.3,4.9,6.5,9.8,7.1,17.7,18.8,9.1,9.4,6.7,0.1,8.7,7.5,6.7,9.4,12.8,13.0,-0.2,19.9,3.9,4.7,5.7,0.9,0.6,0.6,13.8,2.7,1.4,13.5,0.3,1.0,1.4,6.1,6.0,6.6,8.2,0.3,11.9,13.3,-2.4,-1.1,11.2,8.5,1.0,14.3,1.7,18.3,10.3,6.5,7.3,-0.2,6.6,0.7,12.6,0.8,4.7,10.0,0.8,15.7,6.8,-0.6,16.6,9.4,1.0,8.3,1.4,7.0,0.9,1.2,5.6,8.7,7.9,7.3,14.1,0.8,14.0,10.5,1.2,10.0,0.0,11.3,0.2,5.5,6.0,6.3,0.7,5.6,3.5,2.1,0.8,13.4,1.0,4.5,5.1,1.8,0.5,7.0,9.8,-0.2,7.2,-0.2,4.7,5.8,1.7,-0.3,15.3,5.3,7.0,11.1,0.3,10.9,15.9,4.8,8.9,6.1,3.8,0.8,0.5,0.7,0.1,-0.2,6.0,7.4,8.2,0.2,0.6,1.0,0.5,9.8,9.7,7.9,-1.7,12.3,1.5,7.0,7.0,7.6,12.6,-0.7,1.9,4.8,6.7,0.6,13.5,0.1,10.2,0.7,-1.0,8.6,0.3,10.7,-0.3,5.1,-0.1,4.9,12.1,7.7,8.3,8.5,14.7,12.1,-0.2,1.5,12.2,7.3,0.9,4.3,0.1,4.9,15.9,13.0,6.2,0.4,6.5,11.4,0.5,0.1,12.4,0.8,-0.1,7.4,-0.2,7.8,7.3,0.7,0.2,12.1,8.3,-0.8,0.3,9.3,16.3,7.6,7.3,16.4,6.1,-0.6,1.5,0.8,9.1,6.8,11.5,7.1,4.0,2.8,6.5,4.4,-1.7,4.2,4.8,-0.5,9.3,0.0,13.2,8.9,6.7,-0.8,-0.2,0.4,10.2,13.7,6.6,11.0,11.9,6.6,10.2,13.7,0.2,2.2,6.7,4.9,7.8,5.9,10.8,11.1,7.6,7.8,7.3,7.3,12.6,0.9,17.4,-1.8,6.9,6.8,10.5,3.3,6.4,0.8,5.1,6.9,1.0,1.2,4.0,1.4,12.0,11.9,-0.3,4.5,8.0,3.7,1.2,5.1,7.5,13.4,-0.0,7.0,13.2,5.3,0.9,9.3,-0.1,1.3,9.5,8.2,14.9,7.3,4.9,5.3,5.4,0.2,0.6,-0.2,-0.7,6.8,11.9,12.6,8.7,9.6,-0.2,1.7,-0.7,1.0,-0.1,16.3,3.4,5.6,3.1,1.2,5.9,-0.2,5.3,-0.6,5.3,7.7,1.0,0.8,12.9,12.2,5.7,7.0,1.2,5.0,7.2,10.5,-0.5,-0.5,7.0,-0.2,2.8,10.2,1.3,15.4,1.3,9.2,15.0,1.7,13.4,5.1,8.3,-0.0,10.3,11.1,0.0,7.5,12.7,5.8,11.5,7.5,6.2,8.9,16.2,7.3,-0.5,1.0,4.6,10.0,5.4,1.3,-0.7,17.0,0.2,2.5,6.3,0.3,6.3,11.5,0.9,3.9,16.5,9.9,0.5,16.8,6.7,7.0,10.7,12.4,6.7,5.3,7.5,1.8,8.5,0.5,10.5,10.1,8.8,1.4,0.2,5.3,8.1,4.6,2.5,7.3,8.7,12.4,0.7,11.0,4.3,5.9,6.5,14.3,-0.3,12.2,8.2,9.2,15.2,5.6,3.0,8.6,13.3,15.6,7.3,13.2,5.7,9.4,-0.5,9.6,0.3,1.1,3.8,3.8,1.1,5.5,12.0,0.6,5.4,7.3,4.7,3.0,11.1,-0.3,0.2,14.2,6.6,1.7,16.7,12.7,8.1,4.0,6.6,13.0,-0.7,1.9,3.2,9.8,10.5,9.8,5.6,20.0,15.0,6.1,0.9,9.3,6.5,1.6,-0.1,0.8,7.3,11.1,1.6,7.3,0.5,-0.7,8.0,12.4,8.9,15.3,6.8,7.6,4.2,18.1,9.4,0.5,10.8,5.8,9.1,-0.8,6.3,5.7,10.5,3.1,14.9,1.2,-0.4,0.7,17.1,8.7,1.1,1.4,-0.4,0.6,8.6,-0.7,9.9,13.8,5.6,0.9,7.9,16.2,4.3,15.9,-0.2,1.3,2.0,2.7,5.1,5.8,0.5,-0.5,3.7,0.9,14.7,11.9,6.0,0.0,10.4,1.2,4.6,-0.2,6.7,9.2,8.1,12.9,12.0,5.5,7.1,0.7,0.5,8.3,8.8,4.3,9.7,14.8,0.8,0.3,1.1,10.1,-0.1,0.5,-0.0,9.1,4.6,0.2,15.6,0.1,1.0,8.6,-0.7,0.3,7.3,-0.7,7.1,0.4,4.0,1.0,15.5,1.3,23.2,1.2,0.1,5.9,9.5,10.8,8.0,-0.3,13.1,9.2,-0.3,0.6,6.1,14.1,9.1,5.5,0.0,16.7,13.2,8.5,-0.1,18.0,4.4,-0.1,9.3,-0.2,0.2,4.5,6.8,11.4,4.4,0.4,0.4,15.9,6.7,10.8,6.6,7.7,-0.5,14.1,9.7,12.6,6.6,0.2,6.1,-0.6,0.1,14.9,0.2,9.9,1.0,0.8,10.0,7.3,2.9,0.4,11.4,8.6,0.5,3.8,0.8,-0.6,4.8,8.8,7.2,9.8,7.9,0.4,7.7,17.5,4.9,5.6,7.3,0.7,12.8,0.0,0.4,6.6,5.5,0.8,-0.9,0.8,5.2,-0.5,5.7,-0.4,14.5,15.7,7.1,2.2,11.9,7.1,-1.1,16.6,8.7,5.4,1.3,7.4,9.9,5.7,0.3,-0.6,11.9,1.4,0.8,4.4,13.0,4.6,0.6,10.7,6.3,5.7,5.2,-0.0,14.5,4.6,6.6,0.1,8.4,8.3,7.0,14.1,5.4,3.2,21.9,13.8,0.4,0.2,-0.3,0.0,9.2,4.0,3.1,8.1,0.3,7.7,9.9,0.8,14.9,16.7,6.6,8.8,12.3,4.1,-0.8,10.0,1.3,5.9,-0.5,5.7,13.4,0.9,11.3,0.4,12.0,8.2,11.3,-0.6,9.5,1.0,7.9,1.9,-0.3,14.0,8.5,9.5,9.7,1.5,8.4,-0.9,0.2,7.1,10.2,5.8,0.5,6.9,16.9,15.4,-1.0,0.3,7.3,0.8,11.4,4.0,8.0,8.3,0.6,1.6,1.2,0.3,0.1,8.9,8.8,5.0,7.3,-0.3,8.5,6.8,1.0,0.9,11.9,1.5,0.8,0.2,9.9,1.0,-2.0,5.5,5.5,7.0,1.6,2.6,5.9,11.0,1.2,15.8,9.3,10.7,8.5,15.8,-0.5,15.4,-0.3,11.4,15.0,6.2,16.9,0.7,0.1,9.9,9.1,6.4,15.9,1.0,0.4,18.1,15.4,1.6,-0.8,13.8,5.9,14.1,14.6,-0.4,6.4,12.5,2.4,5.8,4.2,7.6,-0.2,5.6,8.7,-2.3,0.4,1.2,8.6,16.3,1.0,9.3,-0.1,0.7,9.8,-0.1,-0.1,0.7,7.9,7.3,12.7,2.6,6.5,6.2,5.6,6.6,5.7,8.5,8.4,8.1,0.7,14.8,8.7,4.9,6.0,1.0,3.7,9.1,13.3,11.0,8.6,9.8,6.4,3.9,-0.3,6.3,8.6,10.6,5.2,16.7,7.9,15.8,6.7,11.9,4.2,-0.2,-0.7,6.5,18.5,0.6,13.4,-0.6,9.3,8.7,8.3,4.6,-0.5,7.8,3.7,7.2,16.9,0.3,0.3,4.3,6.6,6.2,6.3,-0.4,9.7,4.7,-0.0,2.9,8.1,-0.8,1.3,7.7,0.3,9.0,13.6,0.3,7.5,1.5,0.2,9.1,-0.0,-0.6,-0.0,-0.6,0.5,1.4,7.4,11.1,9.6,10.1,6.3,7.0,-0.2,11.4,8.0,-0.4,12.5,9.9,5.2,12.7,6.5,0.4,14.8,4.6,18.4,9.9,0.2,0.7,4.3,0.7,6.5,7.9,7.8,7.3,-0.5,13.6,7.1,14.5,8.3,5.9,4.5,-0.1,0.5,6.3,7.1,0.3,0.6,10.4,5.5,7.3,9.8,-0.7,0.4,1.1,1.2,0.0,0.7,5.2,7.0,1.7,9.9,13.2,7.4,4.9,7.9,3.6,-0.4,8.7,6.5,5.1,-0.7,5.4,0.8,8.0,5.3,-0.6,9.0,7.4,0.4,8.2,9.2,9.7,4.4,-0.6,8.5,6.3,8.6,7.2,4.1,6.7,5.9,11.4,1.5,13.4,4.5,14.9,8.7,-0.5,-0.1,8.3,6.3,0.7,7.4,-0.3,5.9,5.9,13.7,8.5,8.7,7.7,3.4,-0.2,5.5,17.2,9.3,8.2,12.3,-0.9,3.5,5.0,-0.7,-1.3,4.1,-0.6,-0.2,3.8,6.7,6.9,9.8,9.5,9.3,5.4,9.0,7.5,13.5,9.6,13.4,5.6,4.2,0.4,16.4,-0.2,7.1,5.0,10.6,-0.3,5.6,0.6,15.4,15.2,15.4,9.8,5.4,1.2,0.2,14.8,10.7,1.4,7.3,-0.7,0.1,13.7,11.1,0.2,0.6,7.4,8.6,8.7,-0.4,10.7,-1.1,12.1,15.6,0.7,7.0,7.4,0.2,5.3,14.7,18.0,8.6,14.6,9.0,11.3,3.7,12.7,-0.3,11.2,4.4,16.3,8.0,12.1,15.4,6.5,13.3,0.0,7.1,5.8,8.5,10.8,0.9,-0.1,0.3,11.9,6.1,7.1,-0.5,-1.9,10.1,0.3,13.0,3.4,8.0,0.9,0.1,8.0,7.3,7.4,1.1,9.7,1.4,6.3,-0.1,6.4,16.0,9.7,12.5,8.4,12.9,-1.2,7.6,0.6,6.6,12.2,8.7,4.7,9.3,7.2,7.3,11.8,4.8,12.9,0.9,14.5,-0.3,6.2,7.9,1.1,12.1,8.2,0.9,8.0,11.4,1.0,1.0,6.6,6.8,6.2,2.9,6.7,0.2,0.5,5.3,9.6,11.9,6.8,0.5,-0.1,8.3,4.5,5.0,0.3,0.7,9.7,11.4,5.7,6.3,0.4,10.5,-0.5,9.4,-0.9,-0.3,6.5,8.2,8.9,1.5,5.3,14.2,5.0,7.1,7.9,0.6,0.1,3.7,7.1,6.3,10.4,12.5,-0.3,-0.1,0.6,0.6,10.2,11.2,1.4,5.5,9.9,5.7,9.4,0.2,5.8,9.9,4.2,6.8,-0.4,-0.9,0.1,13.1,12.7,0.5,6.0,7.9,-0.0,5.4,20.2,6.1,17.2,5.5,10.0,0.7,13.8,9.0,18.5,15.1,9.9,0.2,8.9,-1.4,8.5,0.5,0.1,4.4,9.0,0.9,4.8,13.1,16.0,5.0,18.7,-1.0,0.2,7.9,6.4,0.6,5.2,12.2,0.8,1.3,3.8,6.0,8.3,-0.3,9.7,0.6,0.3,7.2,8.4,0.4,11.0,0.4,0.6,18.4,1.0,-0.1,6.1,-1.2,7.4,-1.1,5.7,1.6,2.4,0.0,10.2,1.9,-0.2,7.0,5.6,7.9,7.2,8.8,8.3,8.4,6.1,12.2,-0.3,0.6,0.5,5.9,-0.4,5.3,-0.5,5.4,0.3,7.3,13.8,10.7,6.1,1.6,5.5,6.1,17.9,-0.7,15.1,1.2,14.1,6.8,3.5,-0.0,8.1,4.7,7.3,0.5,1.0,0.0,7.0,0.8,0.9,0.2,6.1,2.5,0.8,6.6,6.7,-0.1,9.5,-1.5,5.2,6.6,5.4,1.0,5.2,9.1,8.0,7.7,16.2,13.8,5.4,1.9,8.3,7.5,8.5,5.1,8.5,10.1,11.5,5.5,-0.1,3.8,4.2,0.4,5.2,12.4,12.6,7.8,8.3,15.4,-0.0,5.7,4.0,11.7,4.0,6.4,10.4,1.3,1.2,9.0,11.7,4.1,10.6,6.6,4.8,14.1,-1.6,15.2,0.0,6.5,18.9,7.3,13.7,1.0,17.6,17.0,7.9,9.9,13.4,15.7,1.0,12.1,4.7,5.1,6.6,14.5,5.6,9.5,11.8,9.9,5.0,0.4,6.1,7.6,0.2,8.1,7.9,0.3,9.2,5.1,0.5,6.8,0.4,0.0,5.8,7.4,0.6,-0.5,14.8,11.2,14.8,0.7,8.9,0.0,8.9,8.6,-0.7,-0.3,-0.9,9.0,10.6,8.2,5.9,0.3,3.0,0.2,1.0,0.2,1.9,16.4,13.6,15.7,7.2,9.2,10.0,-0.6,13.2,11.3,6.8,-1.8,-0.3,-0.5,1.0,7.3,8.5,-0.1,-0.2,11.2,-0.4,0.0,6.4,8.5,1.9,8.5,6.3,7.8,1.1,12.3,1.5,-0.3,-0.0,11.9,8.3,11.5,9.1,0.4,8.1,-0.7,0.4,16.6,13.3,0.7,13.6,7.7,0.6,6.6,8.0,4.6,14.8,0.0,1.1,8.6,5.4,10.5,8.2,-0.1,12.6,7.9,11.9,4.5,0.8,-0.5,8.4,0.1,0.5,15.2,7.8,0.9,0.2,8.9,6.1,5.4,4.3,-0.5,5.8,12.1,11.0,9.9,5.3,7.6,0.8,4.7,-0.0,0.3,17.1,0.6,10.2,9.2,0.5,16.3,0.5,0.9,1.1,-0.3,8.0,13.4,11.3,2.0,0.7,7.8,13.4,9.1,0.3,0.3,10.6,-0.4,-0.6,12.6,13.6,1.6,0.2,7.9,0.2,7.4,8.9,0.2,9.9,6.0,8.3,10.2,8.8,-0.1,1.3,5.5,5.2,10.4,9.5,0.4,11.0,0.6,-1.5,1.1,-0.0,0.3,-0.0,1.4,10.1,-0.8,14.5,0.0,-0.7,15.4,14.2],"risk_flags":[[0.0,0,0],[9.0,0,0],[0.7,0,0],[8.0,0,0],[10.0,0,0],[14.0,1,0],[0.4,0,0],[14.0,1,0],[0.5,0,0],[5.0,0,0],[15.6,0,0],[-0.1,0,0],[0.5,0,0],[1.0,0,0],[10.6,0,0],[7.1,0,0],[5.0,0,0],[5.8,0,0],[1.7,0,0],[0.3,0,0],[12.8,0,0],[14.4,1,0],[6.5,0,0],[7.9,0,0],[6.9,0,0],[13.8,0,0],[-0.3,0,0],[6.6,0,0],[7.5,0,0],[8.6,0,0],[0.2,0,0],[13.4,1,0],[4.8,0,0],[7.8,0,0],[12.3,0,0],[9.0,0,0],[6.2,0,0],[6.2,0,0],[-0.1,0,0],[7.6,0,0],[-0.3,0,0],[14.1,1,0],[15.1,1,0],[9.1,1,0],[6.8,0,0],[6.6,0,0],[8.5,0,0],[5.0,0,0],[8.4,0,0],[12.6,0,0],[13.0,1,0],[9.0,1,0],[8.9,0,0],[7.3,0,0],[12.2,0,0],[4.7,0,0],[15.5,1,0],[8.2,0,0],[5.0,0,0],[4.0,0,0],[6.3,0,0],[7.1,0,0],[17.2,1,0],[4.8,0,0],[0.2,1,1],[-1.7,0,0],[1.5,0,0],[5.2,0,0],[4.1,0,0],[0.0,0,0],[7.9,0,0],[6.9,0,0],[11.2,1,0],[15.2,1,0],[5.4,0,0],[14.9,1,0],[-0.5,0,0],[4.1,0,0],[11.5,1,0],[0.7,0,0],[11.5,0,0],[4.3,0,0],[5.2,0,0],[1.2,0,0],[8.7,0,0],[16.0,1,0],[10.8,0,0],[15.1,1,0],[0.2,0,0],[8.7,0,0],[7.2,0,0],[0.6,0,0],[6.1,0,0],[15.5,1,0],[15.5,1,0],[7.1,0,0],[1.4,0,0],[19.1,1,0],[0.1,0,0],[16.2,1,0],[12.0,0,0],[-0.5,0,0],[9.7,0,0],[4.5,0,0],[8.6,0,0],[5.0,0,0],[7.4,0,0],[6.0,0,0],[1.4,0,0],[-0.3,0,0],[6.2,0,0],[8.1,0,0],[0.5,0,0],[10.0,0,0],[7.2,0,0],[11.3,1,0],[0.1,0,0],[0.4,0,0],[12.9,1,0],[11.4,0,0],[6.9,0,0],[10.9,0,0],[14.1,1,0],[0.4,0,0],[12.9,1,0],[13.7,1,0],[5.2,0,0],[6.6,0,0],[5.9,0,0],[5.7,0,0],[13.6,1,0],[4.3,0,0],[15.2,1,0],[0.4,0,0],[0.6,0,0],[14.1,1,0],[5.1,0,0],[6.8,0,0],[7.1,0,0],[0.3,0,0],[8.1,0,0],[8.5,0,0],[0.5,0,0],[1.9,0,0],[-0.0,0,0],[4.8,0,0],[10.0,0,0],[8.6,0,0],[0.6,0,0],[9.1,0,0],[9.8,1,0],[3.4,0,0],[5.7,0,0],[5.9,0,0],[12.6,1,0],[6.5,0,0],[8.3,0,0],[13.3,0,0],[8.9,0,0],[8.5,0,0],[7.9,0,0],[-0.2,0,0],[13.8,0,0],[6.8,0,0],[5.1,0,0],[6.3,0,0],[15.8,1,0],[0.2,0,0],[10.4,0,0],[17.9,1,0],[4.0,0,0],[8.6,1,0],[12.2,0,0],[4.0,0,0],[15.6,1,0],[4.3,0,0],[-0.1,0,0],[-0.2,0,0],[16.1,1,0],[2.6,0,0],[16.2,1,0],[10.0,0,0],[6.6,0,0],[1.6,0,0],[6.5,0,0],[1.2,0,0],[1.1,0,0],[-0.6,0,0],[8.1,0,0],[6.5,0,0],[13.4,0,0],[7.4,0,0],[11.7,0,0],[4.9,0,0],[4.3,0,0],[16.7,1,0],[0.2,0,0],[15.3,1,0],[9.0,0,0],[0.1,0,0],[10.5,0,0],[7.6,0,0],[10.3,0,0],[2.1,0,0],[8.1,0,0],[-0.4,0,0],[7.5,0,0],[0.2,0,0],[0.4,0,0],[-0.4,0,0],[6.5,0,0],[-3.0,0,0],[0.4,0,0],[12.5,1,0],[16.4,1,0],[16.8,1,0],[8.7,0,0],[-0.1,0,0],[16.5,1,0],[0.3,0,0],[10.1,0,0],[5.5,0,0],[6.0,0,0],[9.8,1,0],[0.2,0,0],[0.8,0,0],[-0.4,0,0],[1.2,0,0],[0.5,0,0],[5.2,0,0],[11.7,0,0],[6.7,0,0],[0.9,0,0],[0.0,0,0],[8.2,0,0],[10.1,0,0],[14.6,1,0],[4.6,0,0],[12.0,0,0],[5.2,0,0],[7.0,0,0],[10.8,1,0],[0.1,0,0],[8.3,0,0],[4.5,0,0],[-0.0,0,0],[8.0,0,0],[6.2,0,0],[8.5,0,0],[3.7,0,0],[0.9,0,0],[-0.2,0,0],[10.6,0,0],[8.3,0,0],[7.5,0,0],[16.0,1,0],[4.1,0,0],[0.6,0,0],[-0.3,0,0],[0.7,0,0],[7.7,0,0],[0.6,0,0],[15.9,1,0],[8.1,0,0],[1.7,0,0],[0.5,0,0],[14.0,1,0],[-0.4,0,0],[5.3,0,0],[0.2,0,0],[-0.4,0,0],[17.2,1,0],[10.8,0,0],[6.9,0,0],[5.0,0,0],[-0.1,0,0],[10.2,0,0],[0.1,0,0],[0.1,0,0],[6.8,0,0],[8.7,0,0],[0.9,0,0],[4.5,0,0],[9.0,0,0],[7.6,0,0],[-0.2,0,0],[-0.1,0,0],[11.7,0,0],[3.0,0,0],[0.2,0,0],[7.7,0,0],[7.8,0,0],[5.0,0,0],[5.1,0,0],[0.2,0,0],[9.9,0,0],[7.9,0,0],[7.7,0,0],[16.7,1,0],[4.5,0,0],[4.7,0,0],[19.2,1,0],[0.8,0,0],[9.0,0,0],[9.9,0,0],[13.1,1,0],[6.1,0,0],[-1.1,0,0],[15.1,1,0],[6.5,0,0],[5.2,0,0],[6.9,0,0],[18.9,1,0],[7.0,0,0],[7.4,0,0],[-0.3,0,0],[-0.2,0,0],[-1.1,0,0],[6.6,0,0],[8.9,0,0],[5.8,0,0],[7.1,0,0],[2.4,0,0],[7.3,0,0],[12.2,0,0],[8.8,0,0],[14.0,1,0],[0.6,0,0],[0.1,0,0],[1.1,0,0],[11.8,1,0],[12.7,1,0],[4.1,0,0],[-0.2,0,0],[-0.4,0,0],[12.1,0,0],[7.5,0,0],[7.1,0,0],[1.4,0,0],[5.4,0,0],[2.4,0,0],[7.7,0,0],[6.3,0,0],[2.9,0,0],[12.0,0,0],[1.3,0,0],[11.7,0,0],[0.4,0,0],[7.6,0,0],[0.5,0,0],[19.5,1,0],[-0.1,0,0],[0.3,0,0],[7.4,0,0],[6.1,0,0],[5.1,0,0],[-0.9,0,0],[15.6,1,0],[8.4,0,0],[12.7,1,0],[-1.2,0,0],[6.2,0,0],[10.9,0,0],[23.8,1,1],[5.0,0,0],[1.3,0,0],[12.8,0,0],[0.5,0,0],[0.5,0,0],[6.4,0,0],[7.3,0,0],[0.8,0,0],[13.8,0,0],[0.0,0,0],[0.1,0,0],[5.8,0,0],[7.1,0,0],[9.4,0,0],[17.3,1,0],[4.8,0,0],[0.2,0,0],[6.7,0,0],[4.8,0,0],[0.4,0,0],[13.4,0,0],[5.1,0,0],[-0.5,0,0],[2.1,0,0],[5.2,0,0],[8.6,1,0],[0.4,0,0],[9.2,0,0],[0.3,0,0],[9.0,0,0],[8.6,0,0],[11.2,0,0],[0.9,0,0],[5.6,0,0],[5.8,0,0],[-1.5,0,0],[1.2,0,0],[1.8,0,0],[0.1,0,0],[0.2,0,0],[9.2,0,0],[0.8,0,0],[9.3,0,0],[10.0,0,0],[0.5,0,0],[8.2,0,0],[0.4,0,0],[8.2,0,0],[-0.1,0,0],[14.8,1,0],[0.8,0,0],[5.9,0,0],[1.0,0,0],[0.1,0,0],[0.3,0,0],[8.9,0,0],[0.4,0,0],[0.6,0,0],[8.2,0,0],[2.6,0,0],[8.7,1,0],[15.1,0,0],[0.6,0,0],[3.2,0,0],[13.6,0,0],[8.7,0,0],[5.1,0,0],[13.1,0,0],[0.1,0,0],[6.4,0,0],[7.0,0,0],[1.0,0,0],[-1.1,0,0],[8.0,1,0],[0.7,0,0],[6.8,0,0],[8.4,0,0],[12.4,1,0],[-0.3,0,0],[3.6,0,0],[2.5,0,0],[0.7,0,0],[6.2,0,0],[0.5,0,0],[7.3,0,0],[1.7,0,0],[0.3,0,0],[0.8,0,0],[7.1,0,0],[7.5,0,0],[3.5,0,0],[-1.2,0,0],[0.2,0,0],[0.6,0,0],[5.5,0,0],[0.5,0,0],[11.1,0,0],[-1.1,0,0],[11.0,0,0],[13.3,0,0],[1.2,0,0],[16.7,1,0],[-0.8,0,0],[7.2,0,0],[7.5,1,0],[16.2,1,0],[3.8,0,0],[0.4,0,0],[6.3,0,0],[0.5,0,0],[7.8,0,0],[8.4,0,0],[9.2,0,0],[-0.3,0,0],[4.8,0,0],[10.5,0,0],[7.2,0,0],[0.4,0,0],[8.4,0,0],[6.2,0,0],[5.5,0,0],[-0.2,0,0],[0.2,0,0],[16.7,1,0],[12.3,0,0],[-0.6,0,0],[8.8,0,0],[0.2,0,0],[-0.0,0,0],[0.3,0,0],[3.8,0,0],[7.9,0,0],[8.3,0,0],[0.5,0,0],[3.0,0,0],[8.8,0,0],[4.6,0,0],[7.9,0,0],[15.5,1,0],[3.9,0,0],[6.9,0,0],[-2.0,0,0],[5.5,0,0],[1.5,0,0],[1.3,0,0],[-1.0,0,0],[0.0,0,0],[4.6,0,0],[6.2,0,0],[6.8,0,0],[12.9,0,0],[-0.6,0,0],[10.2,0,0],[2.6,0,0],[9.3,0,0],[6.8,0,0],[12.6,1,1],[9.5,0,0],[5.8,0,0],[0.6,0,0],[5.2,0,0],[9.9,0,0],[0.2,0,0],[5.5,0,0],[13.7,0,0],[14.3,0,0],[-0.1,0,0],[-0.7,0,0],[3.0,0,0],[4.6,0,0],[7.1,0,0],[-0.3,0,0],[1.1,0,0],[0.5,0,0],[-0.2,0,0],[8.0,0,0],[13.3,1,0],[18.7,1,0],[5.9,0,0],[0.7,0,0],[7.9,0,0],[6.1,0,0],[4.2,0,0],[10.5,0,0],[7.6,0,0],[12.3,0,0],[0.3,0,0],[6.0,0,0],[-0.3,0,0],[3.3,0,0],[1.6,0,0],[10.3,0,0],[5.0,0,0],[4.5,0,0],[8.5,0,0],[-0.5,0,0],[0.5,0,0],[5.9,0,0],[7.6,0,0],[1.2,0,0],[-0.1,0,0],[7.6,0,0],[4.4,0,0],[0.7,0,0],[6.5,0,0],[4.6,0,0],[9.0,0,0],[4.5,0,0],[4.0,0,0],[6.8,0,0],[0.7,0,0],[0.9,0,0],[15.0,1,0],[17.5,1,0],[14.3,0,0],[20.9,1,0],[10.4,0,0],[1.3,0,0],[0.1,0,0],[15.6,1,0],[17.8,1,0],[9.3,0,0],[0.3,0,0],[9.4,0,0],[9.5,1,0],[15.7,1,0],[0.3,0,0],[0.4,0,0],[9.2,0,0],[15.7,1,0],[0.3,0,0],[1.9,0,0],[-0.1,0,0],[10.4,0,0],[9.5,0,0],[6.3,0,0],[0.4,0,0],[7.6,0,0],[10.4,0,0],[0.1,0,0],[5.6,0,0],[13.9,1,0],[10.7,0,0],[11.3,1,0],[0.2,0,0],[10.9,0,0],[-0.4,0,0],[14.1,1,0],[0.2,0,0],[11.1,0,0],[4.7,0,0],[14.8,1,0],[15.9,1,0],[15.7,1,0],[4.7,0,0],[0.2,0,0],[14.6,1,0],[6.5,0,0],[0.8,0,0],[-1.2,0,0],[6.5,0,0],[-1.0,0,0],[13.4,1,0],[-0.3,0,0],[-0.6,0,0],[-0.0,0,0],[1.2,0,0],[4.8,0,0],[17.9,1,0],[8.8,0,0],[4.0,0,0],[8.9,0,0],[-0.1,0,0],[11.1,1,0],[6.7,0,0],[3.0,0,0],[-0.8,0,0],[8.8,0,0],[17.9,1,0],[8.1,0,0],[9.3,0,0],[9.8,0,0],[1.0,0,0],[14.3,1,0],[3.7,0,0],[7.6,0,0],[0.9,0,0],[3.8,0,0],[8.6,0,0],[6.4,0,0],[8.2,0,0],[14.6,1,0],[7.3,0,0],[13.3,0,0],[0.8,0,0],[9.4,0,0],[0.1,0,0],[9.0,1,0],[8.1,0,0],[14.2,1,0],[7.8,0,0],[0.2,0,0],[6.8,0,0],[7.9,0,0],[8.2,0,0],[4.8,0,0],[-2.1,0,0],[3.2,0,0],[5.0,0,0],[4.0,0,0],[6.4,0,0],[9.9,0,0],[7.3,0,0],[15.5,1,0],[13.1,1,0],[0.7,0,0],[-0.7,0,0],[11.8,1,0],[12.1,0,0],[14.1,1,0],[5.8,0,0],[4.7,0,0],[0.2,0,0],[1.2,0,0],[11.0,0,0],[0.6,0,0],[9.6,0,0],[18.7,1,0],[6.9,0,0],[10.4,0,0],[5.9,0,0],[0.8,0,0],[10.5,0,0],[-0.0,0,0],[19.5,1,0],[7.7,0,0],[1.4,0,0],[0.7,0,0],[10.3,0,0],[11.9,0,0],[0.5,0,0],[7.8,0,0],[2.0,0,0],[7.9,0,0],[0.4,0,0],[0.2,0,0],[15.0,1,0],[9.6,0,0],[5.9,0,0],[-0.0,0,0],[-0.5,0,0],[15.8,1,0],[7.2,0,0],[-0.5,0,0],[7.8,0,0],[0.2,0,0],[1.1,0,0],[16.7,1,0],[4.7,0,0],[13.9,1,0],[1.0,0,0],[9.6,0,0],[11.2,1,0],[-0.1,0,0],[-0.4,0,0],[-0.5,0,0],[1.4,0,0],[8.3,0,0],[9.1,0,0],[10.3,0,0],[1.7,0,0],[11.9,0,0],[-0.4,0,0],[-1.1,0,0],[11.4,0,0],[8.6,0,0],[0.4,0,0],[0.4,0,0],[8.0,0,0],[1.1,0,0],[9.6,0,0],[2.9,0,0],[12.6,0,0],[4.0,0,0],[0.3,0,0],[8.9,0,0],[4.2,0,0],[7.1,0,0],[3.3,0,0],[8.2,0,0],[13.0,0,0],[8.5,0,0],[-1.5,0,0],[1.3,0,0],[0.8,0,0],[10.3,0,0],[3.3,0,0],[5.2,0,0],[13.6,1,0],[6.7,0,0],[7.1,0,0],[9.1,0,0],[6.5,0,0],[5.1,0,0],[0.6,0,0],[-0.5,0,0],[6.8,0,0],[6.6,0,0],[0.5,0,0],[2.9,0,0],[0.1,0,0],[5.6,0,0],[0.2,0,0],[0.1,0,0],[-0.7,0,0],[2.9,0,0],[0.3,0,0],[15.3,1,0],[5.8,0,0],[8.3,0,0],[14.1,0,0],[17.4,1,0],[16.4,1,0],[16.9,1,0],[7.4,0,0],[1.0,0,0],[16.7,1,0],[8.7,0,0],[4.1,0,0],[10.0,0,0],[9.3,0,0],[0.1,0,0],[8.4,0,0],[0.5,0,0],[6.9,0,0],[21.4,1,1],[7.2,0,0],[12.7,0,0],[12.3,0,0],[12.0,0,0],[5.5,0,0],[-0.1,0,0],[0.6,0,0],[9.1,1,0],[6.0,0,0],[15.2,1,0],[4.0,0,0],[-0.7,0,0],[6.4,0,0],[12.8,0,0],[8.5,0,0],[14.3,1,0],[12.7,0,0],[5.7,0,0],[-0.7,0,0],[6.6,0,0],[1.5,0,0],[6.5,0,0],[15.7,1,0],[1.0,0,0],[4.2,0,0],[9.9,1,0],[-1.1,0,0],[7.5,0,0],[4.9,0,0],[7.9,0,0],[8.2,0,0],[13.7,1,0],[-1.1,0,0],[14.9,1,0],[-0.5,0,0],[6.5,0,0],[13.6,1,0],[0.3,0,0],[9.9,0,0],[15.7,1,0],[7.3,0,0],[0.3,0,0],[1.3,0,0],[0.7,0,0],[4.7,0,0],[14.2,1,0],[0.1,0,0],[8.4,0,0],[1.1,0,0],[3.3,0,0],[4.8,0,0],[0.2,0,0],[9.9,0,0],[0.3,0,0],[10.3,0,0],[-0.4,0,0],[12.1,0,0],[3.8,0,0],[3.1,0,0],[11.6,1,0],[1.1,0,0],[8.6,0,0],[7.3,0,0],[18.1,1,1],[1.0,0,0],[7.9,0,0],[7.2,0,0],[19.9,1,0],[10.8,0,0],[7.1,0,0],[11.2,0,0],[0.4,0,0],[7.5,1,0],[5.1,1,0],[4.8,0,0],[8.5,0,0],[7.4,0,0],[0.1,0,0],[0.5,0,0],[-1.0,0,0],[5.4,0,0],[12.6,1,0],[2.9,0,0],[6.5,0,0],[15.4,1,0],[1.4,0,0],[7.2,0,0],[0.4,0,0],[4.7,0,0],[7.5,0,0],[0.9,0,0],[3.7,0,0],[0.3,0,0],[1.5,0,0],[1.8,0,0],[13.1,0,0],[0.4,0,0],[9.2,0,0],[8.1,0,0],[3.4,0,0],[0.2,0,0],[1.7,0,0],[1.4,0,0],[7.2,0,0],[7.5,0,0],[7.5,0,0],[7.3,0,0],[5.6,0,0],[0.8,0,0],[1.2,0,0],[9.1,1,0],[6.6,0,0],[28.7,1,0],[10.5,0,0],[5.5,0,0],[3.9,0,0],[-0.3,0,0],[6.7,0,0],[7.0,0,0],[1.4,0,0],[10.7,0,0],[8.3,0,0],[4.9,0,0],[6.5,0,0],[9.8,0,0],[7.1,0,0],[17.7,1,0],[18.8,1,0],[9.1,0,0],[9.4,0,0],[6.7,0,0],[0.1,0,0],[8.7,0,0],[7.5,0,0],[6.7,0,0],[9.4,0,0],[12.8,0,0],[13.0,0,0],[-0.2,0,0],[19.9,1,0],[3.9,0,0],[4.7,0,0],[5.7,0,0],[0.9,0,0],[0.6,0,0],[0.6,0,0],[13.8,1,0],[2.7,0,0],[1.4,0,0],[13.5,0,0],[0.3,0,0],[1.0,0,0],[1.4,0,0],[6.1,0,0],[6.0,0,0],[6.6,0,0],[8.2,0,0],[0.3,0,0],[11.9,0,0],[13.3,0,0],[-2.4,0,0],[-1.1,0,0],[11.2,0,0],[8.5,0,0],[1.0,0,0],[14.3,1,0],[1.7,0,0],[18.3,1,0],[10.3,0,0],[6.5,0,0],[7.3,0,0],[-0.2,0,0],[6.6,0,0],[0.7,0,0],[12.6,1,0],[0.8,0,0],[4.7,0,0],[10.0,0,0],[0.8,0,0],[15.7,1,0],[6.8,0,0],[-0.6,0,0],[16.6,1,0],[9.4,1,0],[1.0,0,0],[8.3,0,0],[1.4,0,0],[7.0,0,0],[0.9,0,0],[1.2,0,0],[5.6,0,0],[8.7,0,0],[7.9,0,0],[7.3,0,0],[14.1,1,0],[0.8,0,0],[14.0,1,0],[10.5,0,0],[1.2,0,0],[10.0,0,0],[0.0,0,0],[11.3,0,0],[0.2,0,0],[5.5,0,0],[6.0,0,0],[6.3,0,0],[0.7,0,0],[5.6,0,0],[3.5,0,0],[2.1,0,0],[0.8,0,0],[13.4,0,0],[1.0,0,0],[4.5,0,0],[5.1,0,0],[1.8,0,0],[0.5,0,0],[7.0,0,0],[9.8,0,0],[-0.2,0,0],[7.2,0,0],[-0.2,0,0],[4.7,0,0],[5.8,0,0],[1.7,0,0],[-0.3,0,0],[15.3,1,0],[5.3,0,0],[7.0,0,0],[11.1,0,0],[0.3,0,0],[10.9,0,0],[15.9,1,0],[4.8,0,0],[8.9,0,0],[6.1,0,0],[3.8,0,0],[0.8,0,0],[0.5,0,0],[0.7,0,0],[0.1,0,0],[-0.2,0,0],[6.0,0,0],[7.4,0,0],[8.2,0,0],[0.2,0,0],[0.6,0,0],[1.0,0,0],[0.5,0,0],[9.8,0,0],[9.7,0,0],[7.9,0,0],[-1.7,0,0],[12.3,0,0],[1.5,0,0],[7.0,0,0],[7.0,0,0],[7.6,0,0],[12.6,1,0],[-0.7,0,0],[1.9,0,0],[4.8,0,0],[6.7,0,0],[0.6,0,0],[13.5,1,0],[0.1,0,0],[10.2,1,0],[0.7,0,0],[-1.0,0,0],[8.6,0,0],[0.3,0,0],[10.7,0,0],[-0.3,0,0],[5.1,0,0],[-0.1,0,0],[4.9,0,0],[12.1,1,0],[7.7,0,0],[8.3,0,0],[8.5,0,0],[14.7,1,0],[12.1,0,0],[-0.2,0,0],[1.5,0,0],[12.2,0,0],[7.3,0,0],[0.9,0,0],[4.3,0,0],[0.1,0,0],[4.9,0,0],[15.9,1,0],[13.0,0,0],[6.2,0,0],[0.4,0,0],[6.5,0,0],[11.4,0,0],[0.5,0,0],[0.1,0,0],[12.4,0,0],[0.8,0,0],[-0.1,0,0],[7.4,0,0],[-0.2,0,0],[7.8,0,0],[7.3,0,0],[0.7,0,0],[0.2,0,0],[12.1,0,0],[8.3,0,0],[-0.8,0,0],[0.3,0,0],[9.3,0,0],[16.3,1,0],[7.6,0,0],[7.3,0,0],[16.4,1,0],[6.1,0,0],[-0.6,0,0],[1.5,0,0],[0.8,0,0],[9.1,0,0],[6.8,0,0],[11.5,0,0],[7.1,0,0],[4.0,0,0],[2.8,0,0],[6.5,0,0],[4.4,0,0],[-1.7,0,0],[4.2,0,0],[4.8,0,0],[-0.5,0,0],[9.3,0,0],[0.0,0,0],[13.2,0,0],[8.9,0,0],[6.7,0,0],[-0.8,0,0],[-0.2,0,0],[0.4,0,0],[10.2,0,0],[13.7,0,0],[6.6,0,0],[11.0,0,0],[11.9,0,0],[6.6,0,0],[10.2,0,0],[13.7,1,0],[0.2,0,0],[2.2,0,0],[6.7,0,0],[4.9,0,0],[7.8,0,0],[5.9,0,0],[10.8,1,0],[11.1,0,0],[7.6,0,0],[7.8,0,0],[7.3,0,0],[7.3,0,0],[12.6,0,0],[0.9,0,0],[17.4,1,0],[-1.8,0,0],[6.9,0,0],[6.8,0,0],[10.5,1,0],[3.3,0,0],[6.4,0,0],[0.8,0,0],[5.1,0,0],[6.9,0,0],[1.0,0,0],[1.2,0,0],[4.0,0,0],[1.4,0,0],[12.0,0,0],[11.9,0,0],[-0.3,0,0],[4.5,0,0],[8.0,0,0],[3.7,0,0],[1.2,0,0],[5.1,0,0],[7.5,0,0],[13.4,0,0],[-0.0,0,0],[7.0,0,0],[13.2,0,0],[5.3,0,0],[0.9,0,0],[9.3,0,0],[-0.1,0,0],[1.3,0,0],[9.5,0,0],[8.2,0,0],[14.9,1,0],[7.3,0,0],[4.9,0,0],[5.3,0,0],[5.4,0,0],[0.2,0,0],[0.6,0,0],[-0.2,0,0],[-0.7,0,0],[6.8,0,0],[11.9,0,0],[12.6,0,0],[8.7,0,0],[9.6,0,0],[-0.2,0,0],[1.7,0,0],[-0.7,0,0],[1.0,0,0],[-0.1,0,0],[16.3,1,0],[3.4,0,0],[5.6,0,0],[3.1,0,0],[1.2,0,0],[5.9,0,0],[-0.2,0,0],[5.3,0,0],[-0.6,0,0],[5.3,0,0],[7.7,0,0],[1.0,0,0],[0.8,0,0],[12.9,1,0],[12.2,0,0],[5.7,0,0],[7.0,0,0],[1.2,0,0],[5.0,0,0],[7.2,0,0],[10.5,0,0],[-0.5,0,0],[-0.5,0,0],[7.0,0,0],[-0.2,0,0],[2.8,0,0],[10.2,0,0],[1.3,0,0],[15.4,1,0],[1.3,0,0],[9.2,0,0],[15.0,1,0],[1.7,0,0],[13.4,1,0],[5.1,0,0],[8.3,0,0],[-0.0,0,0],[10.3,0,0],[11.1,0,0],[0.0,0,0],[7.5,0,0],[12.7,1,0],[5.8,0,0],[11.5,0,0],[7.5,0,0],[6.2,0,0],[8.9,0,0],[16.2,1,0],[7.3,0,0],[-0.5,0,0],[1.0,0,0],[4.6,0,0],[10.0,0,0],[5.4,0,0],[1.3,0,0],[-0.7,0,0],[17.0,1,0],[0.2,0,0],[2.5,0,0],[6.3,0,0],[0.3,0,0],[6.3,0,0],[11.5,0,0],[0.9,0,0],[3.9,0,0],[16.5,1,0],[9.9,1,0],[0.5,0,0],[16.8,1,0],[6.7,0,0],[7.0,0,0],[10.7,1,0],[12.4,0,0],[6.7,0,0],[5.3,0,0],[7.5,0,0],[1.8,0,0],[8.5,0,0],[0.5,0,0],[10.5,0,0],[10.1,0,0],[8.8,0,0],[1.4,0,0],[0.2,0,0],[5.3,0,0],[8.1,0,0],[4.6,0,0],[2.5,0,0],[7.3,0,0],[8.7,0,0],[12.4,1,0],[0.7,0,0],[11.0,0,0],[4.3,0,0],[5.9,0,0],[6.5,0,0],[14.3,1,0],[-0.3,0,0],[12.2,0,0],[8.2,0,0],[9.2,0,0],[15.2,1,0],[5.6,0,0],[3.0,0,0],[8.6,0,0],[13.3,1,0],[15.6,1,0],[7.3,0,0],[13.2,1,0],[5.7,0,0],[9.4,0,0],[-0.5,0,0],[9.6,0,0],[0.3,0,0],[1.1,0,0],[3.8,0,0],[3.8,0,0],[1.1,0,0],[5.5,0,0],[12.0,0,0],[0.6,0,0],[5.4,0,0],[7.3,0,0],[4.7,0,0],[3.0,0,0],[11.1,0,0],[-0.3,0,0],[0.2,0,0],[14.2,1,0],[6.6,0,0],[1.7,0,0],[16.7,1,0],[12.7,0,0],[8.1,0,0],[4.0,0,0],[6.6,0,0],[13.0,0,0],[-0.7,0,0],[1.9,0,0],[3.2,0,0],[9.8,0,0],[10.5,0,0],[9.8,0,0],[5.6,0,0],[20.0,1,0],[15.0,1,0],[6.1,0,0],[0.9,0,0],[9.3,0,0],[6.5,0,0],[1.6,0,0],[-0.1,0,0],[0.8,0,0],[7.3,0,0],[11.1,1,0],[1.6,0,0],[7.3,0,0],[0.5,0,0],[-0.7,0,0],[8.0,0,0],[12.4,1,0],[8.9,0,0],[15.3,1,0],[6.8,0,0],[7.6,0,0],[4.2,0,0],[18.1,1,0],[9.4,1,0],[0.5,0,0],[10.8,0,0],[5.8,0,0],[9.1,0,0],[-0.8,0,0],[6.3,0,0],[5.7,0,0],[10.5,0,0],[3.1,0,0],[14.9,1,0],[1.2,0,0],[-0.4,0,0],[0.7,0,0],[17.1,1,0],[8.7,0,0],[1.1,0,0],[1.4,0,0],[-0.4,0,0],[0.6,0,0],[8.6,0,0],[-0.7,0,0],[9.9,1,0],[13.8,1,0],[5.6,0,0],[0.9,0,0],[7.9,0,0],[16.2,1,0],[4.3,0,0],[15.9,1,0],[-0.2,0,0],[1.3,0,0],[2.0,0,0],[2.7,0,0],[5.1,0,0],[5.8,0,0],[0.5,0,0],[-0.5,0,0],[3.7,0,0],[0.9,0,0],[14.7,1,0],[11.9,1,0],[6.0,0,0],[0.0,0,0],[10.4,0,0],[1.2,0,0],[4.6,0,0],[-0.2,0,0],[6.7,0,0],[9.2,0,0],[8.1,0,0],[12.9,0,0],[12.0,1,0],[5.5,0,0],[7.1,0,0],[0.7,0,0],[0.5,0,0],[8.3,1,0],[8.8,0,0],[4.3,0,0],[9.7,0,0],[14.8,1,0],[0.8,0,0],[0.3,0,0],[1.1,0,0],[10.1,0,0],[-0.1,0,0],[0.5,0,0],[-0.0,0,0],[9.1,0,0],[4.6,0,0],[0.2,0,0],[15.6,1,0],[0.1,0,0],[1.0,0,0],[8.6,0,0],[-0.7,0,0],[0.3,0,0],[7.3,0,0],[-0.7,0,0],[7.1,0,0],[0.4,0,0],[4.0,0,0],[1.0,0,0],[15.5,1,1],[1.3,0,0],[23.2,1,1],[1.2,0,0],[0.1,0,0],[5.9,0,0],[9.5,1,0],[10.8,0,0],[8.0,0,0],[-0.3,0,0],[13.1,0,0],[9.2,0,0],[-0.3,0,0],[0.6,0,0],[6.1,0,0],[14.1,0,0],[9.1,0,0],[5.5,0,0],[0.0,0,0],[16.7,1,0],[13.2,0,0],[8.5,0,0],[-0.1,0,0],[18.0,1,0],[4.4,0,0],[-0.1,0,0],[9.3,0,0],[-0.2,0,0],[0.2,0,0],[4.5,0,0],[6.8,0,0],[11.4,0,0],[4.4,0,0],[0.4,0,0],[0.4,0,0],[15.9,1,0],[6.7,0,0],[10.8,0,0],[6.6,0,0],[7.7,0,0],[-0.5,0,0],[14.1,0,0],[9.7,0,0],[12.6,0,0],[6.6,0,0],[0.2,0,0],[6.1,0,0],[-0.6,0,0],[0.1,0,0],[14.9,1,0],[0.2,0,0],[9.9,0,0],[1.0,0,0],[0.8,0,0],[10.0,0,0],[7.3,0,0],[2.9,0,0],[0.4,0,0],[11.4,0,0],[8.6,0,0],[0.5,0,0],[3.8,0,0],[0.8,0,0],[-0.6,0,0],[4.8,0,0],[8.8,0,0],[7.2,0,0],[9.8,0,0],[7.9,0,0],[0.4,0,0],[7.7,0,0],[17.5,1,0],[4.9,0,0],[5.6,0,0],[7.3,0,0],[0.7,0,0],[12.8,1,0],[0.0,0,0],[0.4,0,0],[6.6,0,0],[5.5,0,0],[0.8,0,0],[-0.9,0,0],[0.8,0,0],[5.2,0,0],[-0.5,0,0],[5.7,0,0],[-0.4,0,0],[14.5,1,1],[15.7,1,0],[7.1,1,0],[2.2,0,0],[11.9,0,0],[7.1,0,0],[-1.1,0,0],[16.6,1,0],[8.7,0,0],[5.4,0,0],[1.3,0,0],[7.4,0,0],[9.9,0,0],[5.7,0,0],[0.3,0,0],[-0.6,0,0],[11.9,1,0],[1.4,0,0],[0.8,0,0],[4.4,0,0],[13.0,0,0],[4.6,0,0],[0.6,0,0],[10.7,0,0],[6.3,0,0],[5.7,0,0],[5.2,0,0],[-0.0,0,0],[14.5,1,0],[4.6,0,0],[6.6,0,0],[0.1,0,0],[8.4,0,0],[8.3,0,0],[7.0,0,0],[14.1,1,0],[5.4,0,0],[3.2,0,0],[21.9,1,0],[13.8,1,0],[0.4,0,0],[0.2,0,0],[-0.3,0,0],[0.0,0,0],[9.2,0,0],[4.0,0,0],[3.1,0,0],[8.1,0,0],[0.3,0,0],[7.7,0,0],[9.9,0,0],[0.8,0,0],[14.9,1,0],[16.7,1,0],[6.6,0,0],[8.8,0,0],[12.3,0,0],[4.1,0,0],[-0.8,0,0],[10.0,0,0],[1.3,0,0],[5.9,0,0],[-0.5,0,0],[5.7,0,0],[13.4,1,0],[0.9,0,0],[11.3,1,0],[0.4,0,0],[12.0,0,0],[8.2,0,0],[11.3,1,0],[-0.6,0,0],[9.5,0,0],[1.0,0,0],[7.9,0,0],[1.9,0,0],[-0.3,0,0],[14.0,1,0],[8.5,0,0],[9.5,0,0],[9.7,1,0],[1.5,0,0],[8.4,0,0],[-0.9,0,0],[0.2,0,0],[7.1,0,0],[10.2,0,0],[5.8,0,0],[0.5,0,0],[6.9,0,0],[16.9,1,0],[15.4,1,0],[-1.0,0,0],[0.3,0,0],[7.3,0,0],[0.8,0,0],[11.4,1,0],[4.0,0,0],[8.0,0,0],[8.3,0,0],[0.6,0,0],[1.6,0,0],[1.2,0,0],[0.3,0,0],[0.1,0,0],[8.9,1,0],[8.8,0,0],[5.0,0,0],[7.3,0,0],[-0.3,0,0],[8.5,0,0],[6.8,0,0],[1.0,0,0],[0.9,0,0],[11.9,1,0],[1.5,0,0],[0.8,0,0],[0.2,0,0],[9.9,0,0],[1.0,0,0],[-2.0,0,0],[5.5,0,0],[5.5,0,0],[7.0,0,0],[1.6,0,0],[2.6,0,0],[5.9,0,0],[11.0,0,0],[1.2,0,0],[15.8,1,0],[9.3,0,0],[10.7,0,0],[8.5,0,0],[15.8,1,0],[-0.5,0,0],[15.4,1,0],[-0.3,0,0],[11.4,0,0],[15.0,1,0],[6.2,0,0],[16.9,1,0],[0.7,0,0],[0.1,0,0],[9.9,0,0],[9.1,1,0],[6.4,0,0],[15.9,1,0],[1.0,0,0],[0.4,0,0],[18.1,1,0],[15.4,1,0],[1.6,0,0],[-0.8,0,0],[13.8,1,0],[5.9,0,0],[14.1,1,0],[14.6,1,0],[-0.4,0,0],[6.4,0,0],[12.5,0,0],[2.4,0,0],[5.8,0,0],[4.2,0,0],[7.6,0,0],[-0.2,0,0],[5.6,0,0],[8.7,0,0],[-2.3,0,0],[0.4,0,0],[1.2,0,0],[8.6,0,0],[16.3,1,0],[1.0,0,0],[9.3,1,0],[-0.1,0,0],[0.7,0,0],[9.8,0,0],[-0.1,0,0],[-0.1,0,0],[0.7,0,0],[7.9,0,0],[7.3,0,0],[12.7,0,0],[2.6,0,0],[6.5,0,0],[6.2,0,0],[5.6,0,0],[6.6,0,0],[5.7,0,0],[8.5,0,0],[8.4,0,0],[8.1,0,0],[0.7,0,0],[14.8,1,0],[8.7,0,0],[4.9,0,0],[6.0,0,0],[1.0,0,0],[3.7,0,0],[9.1,0,0],[13.3,0,0],[11.0,0,0],[8.6,0,0],[9.8,0,0],[6.4,0,0],[3.9,0,0],[-0.3,0,0],[6.3,0,0],[8.6,0,0],[10.6,1,0],[5.2,0,0],[16.7,1,0],[7.9,0,0],[15.8,1,0],[6.7,0,0],[11.9,0,0],[4.2,0,0],[-0.2,0,0],[-0.7,0,0],[6.5,0,0],[18.5,1,0],[0.6,0,0],[13.4,0,0],[-0.6,0,0],[9.3,0,0],[8.7,0,0],[8.3,0,0],[4.6,0,0],[-0.5,0,0],[7.8,0,0],[3.7,0,0],[7.2,0,0],[16.9,1,0],[0.3,0,0],[0.3,0,0],[4.3,0,0],[6.6,0,0],[6.2,0,0],[6.3,0,0],[-0.4,0,0],[9.7,0,0],[4.7,0,0],[-0.0,0,0],[2.9,0,0],[8.1,0,0],[-0.8,0,0],[1.3,0,0],[7.7,0,0],[0.3,0,0],[9.0,0,0],[13.6,1,0],[0.3,0,0],[7.5,0,0],[1.5,0,0],[0.2,0,0],[9.1,0,0],[-0.0,0,0],[-0.6,0,0],[-0.0,0,0],[-0.6,0,0],[0.5,0,0],[1.4,0,0],[7.4,0,0],[11.1,0,0],[9.6,0,0],[10.1,0,0],[6.3,0,0],[7.0,0,0],[-0.2,0,0],[11.4,0,0],[8.0,0,0],[-0.4,0,0],[12.5,1,0],[9.9,0,0],[5.2,0,0],[12.7,0,0],[6.5,0,0],[0.4,0,0],[14.8,0,0],[4.6,0,0],[18.4,1,0],[9.9,0,0],[0.2,0,0],[0.7,0,0],[4.3,0,0],[0.7,0,0],[6.5,0,0],[7.9,0,0],[7.8,0,0],[7.3,0,0],[-0.5,0,0],[13.6,0,0],[7.1,0,0],[14.5,1,0],[8.3,0,0],[5.9,0,0],[4.5,0,0],[-0.1,0,0],[0.5,0,0],[6.3,0,0],[7.1,0,0],[0.3,0,0],[0.6,0,0],[10.4,0,0],[5.5,0,0],[7.3,0,0],[9.8,0,0],[-0.7,0,0],[0.4,0,0],[1.1,0,0],[1.2,0,0],[0.0,0,0],[0.7,0,0],[5.2,0,0],[7.0,0,0],[1.7,0,0],[9.9,1,0],[13.2,1,0],[7.4,0,0],[4.9,0,0],[7.9,0,0],[3.6,0,0],[-0.4,0,0],[8.7,0,0],[6.5,0,0],[5.1,0,0],[-0.7,0,0],[5.4,0,0],[0.8,0,0],[8.0,0,0],[5.3,0,0],[-0.6,0,0],[9.0,0,0],[7.4,0,0],[0.4,0,0],[8.2,0,0],[9.2,1,0],[9.7,0,0],[4.4,0,0],[-0.6,0,0],[8.5,0,0],[6.3,0,0],[8.6,0,0],[7.2,0,0],[4.1,0,0],[6.7,0,0],[5.9,0,0],[11.4,1,0],[1.5,0,0],[13.4,0,0],[4.5,0,0],[14.9,1,1],[8.7,0,0],[-0.5,0,0],[-0.1,0,0],[8.3,0,0],[6.3,0,0],[0.7,0,0],[7.4,0,0],[-0.3,0,0],[5.9,0,0],[5.9,0,0],[13.7,1,0],[8.5,0,0],[8.7,0,0],[7.7,0,0],[3.4,0,0],[-0.2,0,0],[5.5,0,0],[17.2,1,0],[9.3,0,0],[8.2,0,0],[12.3,1,0],[-0.9,0,0],[3.5,0,0],[5.0,0,0],[-0.7,0,0],[-1.3,0,0],[4.1,0,0],[-0.6,0,0],[-0.2,0,0],[3.8,0,0],[6.7,0,0],[6.9,0,0],[9.8,0,0],[9.5,1,0],[9.3,0,0],[5.4,0,0],[9.0,0,0],[7.5,0,0],[13.5,0,0],[9.6,0,0],[13.4,0,0],[5.6,0,0],[4.2,0,0],[0.4,0,0],[16.4,1,0],[-0.2,0,0],[7.1,0,0],[5.0,0,0],[10.6,0,0],[-0.3,0,0],[5.6,0,0],[0.6,0,0],[15.4,1,0],[15.2,1,0],[15.4,1,0],[9.8,0,0],[5.4,0,0],[1.2,0,0],[0.2,0,0],[14.8,1,0],[10.7,0,0],[1.4,0,0],[7.3,0,0],[-0.7,0,0],[0.1,0,0],[13.7,1,0],[11.1,0,0],[0.2,0,0],[0.6,0,0],[7.4,0,0],[8.6,0,0],[8.7,0,0],[-0.4,0,0],[10.7,0,0],[-1.1,0,0],[12.1,1,0],[15.6,1,0],[0.7,0,0],[7.0,0,0],[7.4,0,0],[0.2,0,0],[5.3,0,0],[14.7,1,0],[18.0,1,0],[8.6,0,0],[14.6,1,0],[9.0,0,0],[11.3,0,0],[3.7,0,0],[12.7,0,0],[-0.3,0,0],[11.2,1,0],[4.4,0,0],[16.3,1,0],[8.0,0,0],[12.1,0,0],[15.4,1,0],[6.5,0,0],[13.3,1,0],[0.0,0,0],[7.1,0,0],[5.8,0,0],[8.5,0,0],[10.8,0,0],[0.9,0,0],[-0.1,0,0],[0.3,0,0],[11.9,0,0],[6.1,0,0],[7.1,0,0],[-0.5,0,0],[-1.9,0,0],[10.1,0,0],[0.3,0,0],[13.0,1,0],[3.4,0,0],[8.0,0,0],[0.9,0,0],[0.1,0,0],[8.0,0,0],[7.3,0,0],[7.4,0,0],[1.1,0,0],[9.7,0,0],[1.4,0,0],[6.3,0,0],[-0.1,0,0],[6.4,0,0],[16.0,1,0],[9.7,0,0],[12.5,1,0],[8.4,0,0],[12.9,0,0],[-1.2,0,0],[7.6,0,0],[0.6,0,0],[6.6,0,0],[12.2,1,0],[8.7,0,0],[4.7,0,0],[9.3,0,0],[7.2,0,0],[7.3,0,0],[11.8,0,0],[4.8,0,0],[12.9,0,0],[0.9,0,0],[14.5,1,0],[-0.3,0,0],[6.2,0,0],[7.9,0,0],[1.1,0,0],[12.1,0,0],[8.2,0,0],[0.9,0,0],[8.0,0,0],[11.4,1,0],[1.0,0,0],[1.0,0,0],[6.6,0,0],[6.8,0,0],[6.2,0,0],[2.9,0,0],[6.7,0,0],[0.2,0,0],[0.5,0,0],[5.3,0,0],[9.6,0,0],[11.9,0,0],[6.8,0,0],[0.5,0,0],[-0.1,0,0],[8.3,0,0],[4.5,0,0],[5.0,0,0],[0.3,0,0],[0.7,0,0],[9.7,1,1],[11.4,0,0],[5.7,0,0],[6.3,0,0],[0.4,0,0],[10.5,0,0],[-0.5,0,0],[9.4,0,0],[-0.9,0,0],[-0.3,0,0],[6.5,0,0],[8.2,0,0],[8.9,0,0],[1.5,0,0],[5.3,0,0],[14.2,1,0],[5.0,0,0],[7.1,0,0],[7.9,0,0],[0.6,0,0],[0.1,0,0],[3.7,0,0],[7.1,0,0],[6.3,0,0],[10.4,0,0],[12.5,1,0],[-0.3,0,0],[-0.1,0,0],[0.6,0,0],[0.6,0,0],[10.2,0,0],[11.2,0,0],[1.4,0,0],[5.5,0,0],[9.9,0,0],[5.7,0,0],[9.4,1,0],[0.2,0,0],[5.8,1,0],[9.9,0,0],[4.2,0,0],[6.8,0,0],[-0.4,0,0],[-0.9,0,0],[0.1,0,0],[13.1,1,0],[12.7,1,0],[0.5,0,0],[6.0,0,0],[7.9,0,0],[-0.0,0,0],[5.4,0,0],[20.2,1,0],[6.1,0,0],[17.2,1,0],[5.5,0,0],[10.0,0,0],[0.7,0,0],[13.8,1,0],[9.0,0,0],[18.5,1,0],[15.1,1,0],[9.9,0,0],[0.2,0,0],[8.9,0,0],[-1.4,0,0],[8.5,0,0],[0.5,0,0],[0.1,0,0],[4.4,0,0],[9.0,0,0],[0.9,0,0],[4.8,0,0],[13.1,1,0],[16.0,1,0],[5.0,0,0],[18.7,1,0],[-1.0,0,0],[0.2,0,0],[7.9,0,0],[6.4,0,0],[0.6,0,0],[5.2,0,0],[12.2,0,0],[0.8,0,0],[1.3,0,0],[3.8,0,0],[6.0,0,0],[8.3,0,0],[-0.3,0,0],[9.7,0,0],[0.6,0,0],[0.3,0,0],[7.2,0,0],[8.4,0,0],[0.4,0,0],[11.0,0,0],[0.4,0,0],[0.6,0,0],[18.4,1,0],[1.0,0,0],[-0.1,0,0],[6.1,0,0],[-1.2,0,0],[7.4,0,0],[-1.1,0,0],[5.7,0,0],[1.6,0,0],[2.4,1,0],[0.0,0,0],[10.2,0,0],[1.9,0,0],[-0.2,0,0],[7.0,0,0],[5.6,0,0],[7.9,0,0],[7.2,0,0],[8.8,0,0],[8.3,0,0],[8.4,0,0],[6.1,0,0],[12.2,1,0],[-0.3,0,0],[0.6,0,0],[0.5,0,0],[5.9,0,0],[-0.4,0,0],[5.3,0,0],[-0.5,0,0],[5.4,0,0],[0.3,0,0],[7.3,0,0],[13.8,0,0],[10.7,0,0],[6.1,0,0],[1.6,0,0],[5.5,0,0],[6.1,0,0],[17.9,1,0],[-0.7,0,0],[15.1,1,0],[1.2,0,0],[14.1,1,0],[6.8,0,0],[3.5,0,0],[-0.0,0,0],[8.1,0,0],[4.7,0,0],[7.3,0,0],[0.5,0,0],[1.0,0,0],[0.0,0,0],[7.0,0,0],[0.8,0,0],[0.9,0,0],[0.2,0,0],[6.1,0,0],[2.5,0,0],[0.8,0,0],[6.6,0,0],[6.7,0,0],[-0.1,0,0],[9.5,1,0],[-1.5,0,0],[5.2,0,0],[6.6,0,0],[5.4,0,0],[1.0,0,0],[5.2,0,0],[9.1,0,0],[8.0,0,0],[7.7,0,0],[16.2,1,0],[13.8,1,0],[5.4,0,0],[1.9,0,0],[8.3,0,0],[7.5,0,0],[8.5,0,0],[5.1,0,0],[8.5,0,0],[10.1,0,0],[11.5,0,0],[5.5,1,0],[-0.1,0,0],[3.8,0,0],[4.2,0,0],[0.4,0,0],[5.2,0,0],[12.4,0,0],[12.6,1,0],[7.8,0,0],[8.3,0,0],[15.4,1,0],[-0.0,0,0],[5.7,0,0],[4.0,0,0],[11.7,1,0],[4.0,0,0],[6.4,0,0],[10.4,0,0],[1.3,0,0],[1.2,0,0],[9.0,0,0],[11.7,1,0],[4.1,0,0],[10.6,0,0],[6.6,0,0],[4.8,0,0],[14.1,1,0],[-1.6,0,0],[15.2,1,0],[0.0,0,0],[6.5,0,0],[18.9,1,0],[7.3,0,0],[13.7,1,0],[1.0,0,0],[17.6,1,0],[17.0,1,0],[7.9,0,0],[9.9,0,0],[13.4,1,0],[15.7,1,0],[1.0,0,0],[12.1,0,0],[4.7,0,0],[5.1,0,0],[6.6,0,0],[14.5,1,0],[5.6,0,0],[9.5,0,0],[11.8,0,0],[9.9,0,0],[5.0,0,0],[0.4,0,0],[6.1,0,0],[7.6,1,0],[0.2,0,0],[8.1,0,0],[7.9,0,0],[0.3,0,0],[9.2,0,0],[5.1,0,0],[0.5,0,0],[6.8,0,0],[0.4,0,0],[0.0,0,0],[5.8,0,0],[7.4,0,0],[0.6,0,0],[-0.5,0,0],[14.8,1,0],[11.2,1,0],[14.8,1,0],[0.7,0,0],[8.9,0,0],[0.0,0,0],[8.9,0,0],[8.6,0,0],[-0.7,0,0],[-0.3,0,0],[-0.9,0,0],[9.0,0,0],[10.6,0,0],[8.2,0,0],[5.9,0,0],[0.3,0,0],[3.0,0,0],[0.2,0,0],[1.0,0,0],[0.2,0,0],[1.9,0,0],[16.4,1,0],[13.6,1,0],[15.7,1,0],[7.2,0,0],[9.2,0,0],[10.0,0,0],[-0.6,0,0],[13.2,1,0],[11.3,0,0],[6.8,0,0],[-1.8,0,0],[-0.3,0,0],[-0.5,0,0],[1.0,0,0],[7.3,0,0],[8.5,0,0],[-0.1,0,0],[-0.2,0,0],[11.2,0,0],[-0.4,0,0],[0.0,0,0],[6.4,0,0],[8.5,0,0],[1.9,0,0],[8.5,0,0],[6.3,0,0],[7.8,0,0],[1.1,0,0],[12.3,0,0],[1.5,0,0],[-0.3,0,0],[-0.0,0,0],[11.9,0,0],[8.3,0,0],[11.5,0,0],[9.1,0,0],[0.4,0,0],[8.1,0,0],[-0.7,0,0],[0.4,0,0],[16.6,1,0],[13.3,0,0],[0.7,0,0],[13.6,1,0],[7.7,0,0],[0.6,0,0],[6.6,0,0],[8.0,0,0],[4.6,0,0],[14.8,1,0],[0.0,0,0],[1.1,0,0],[8.6,0,0],[5.4,0,0],[10.5,0,0],[8.2,0,0],[-0.1,0,0],[12.6,0,0],[7.9,0,0],[11.9,0,0],[4.5,0,0],[0.8,0,0],[-0.5,0,0],[8.4,0,0],[0.1,0,0],[0.5,0,0],[15.2,1,0],[7.8,0,0],[0.9,0,0],[0.2,0,0],[8.9,0,0],[6.1,0,0],[5.4,0,0],[4.3,0,0],[-0.5,0,0],[5.8,0,0],[12.1,0,0],[11.0,0,0],[9.9,1,0],[5.3,0,0],[7.6,0,0],[0.8,0,0],[4.7,0,0],[-0.0,0,0],[0.3,0,0],[17.1,1,0],[0.6,0,0],[10.2,0,0],[9.2,0,0],[0.5,0,0],[16.3,1,0],[0.5,0,0],[0.9,0,0],[1.1,0,0],[-0.3,0,0],[8.0,0,0],[13.4,0,0],[11.3,0,0],[2.0,0,0],[0.7,0,0],[7.8,0,0],[13.4,1,0],[9.1,0,0],[0.3,0,0],[0.3,0,0],[10.6,1,0],[-0.4,0,0],[-0.6,0,0],[12.6,1,0],[13.6,1,0],[1.6,0,0],[0.2,0,0],[7.9,0,0],[0.2,0,0],[7.4,0,0],[8.9,0,0],[0.2,0,0],[9.9,1,0],[6.0,0,0],[8.3,0,0],[10.2,0,0],[8.8,0,0],[-0.1,0,0],[1.3,0,0],[5.5,0,0],[5.2,0,0],[10.4,0,0],[9.5,0,0],[0.4,0,0],[11.0,0,0],[0.6,0,0],[-1.5,0,0],[1.1,0,0],[-0.0,0,0],[0.3,0,0],[-0.0,0,0],[1.4,0,0],[10.1,1,0],[-0.8,0,0],[14.5,1,0],[0.0,0,0],[-0.7,0,0],[15.4,1,0],[14.2,1,1]],"line":{"dates":["2024-01-02","2024-01-09","2024-01-16","2024-01-23","2024-01-30","2024-02-06","2024-02-13","2024-02-20","2024-02-27","2024-03-05","2024-03-12","2024-03-19","2024-03-26","2024-04-02","2024-04-09","2024-04-16","2024-04-23","2024-04-30","2024-05-07","2024-05-14","2024-05-21","2024-05-28","2024-06-04","2024-06-11","2024-06-18","2024-06-25","2024-07-02","2024-07-09","2024-07-16","2024-07-23","2024-07-30","2024-08-06","2024-08-13","2024-08-20","2024-08-27","2024-09-03","2024-09-10","2024-09-17","2024-09-24","2024-10-01","2024-10-08","2024-10-15","2024-10-22","2024-10-29","2024-11-05","2024-11-12","2024-11-19","2024-11-26","2024-12-03","2024-12-10","2024-12-17","2024-12-24","2024-12-31","2025-01-07","2025-01-14","2025-01-21","2025-01-28","2025-02-04","2025-02-11","2025-02-18","2025-02-25","2025-03-04","2025-03-11","2025-03-18","2025-03-25","2025-04-01","2025-04-08","2025-04-15","2025-04-22","2025-04-29","2025-05-06","2025-05-13","2025-05-20","2025-05-27","2025-06-03","2025-06-10","2025-06-17","2025-06-24","2025-07-01","2025-07-08","2025-07-15","2025-07-22","2025-07-29","2025-08-05","2025-08-12","2025-08-19","2025-08-26","2025-09-02","2025-09-09","2025-09-16","2025-09-23","2025-09-30","2025-10-07","2025-10-14","2025-10-21","2025-10-28","2025-11-04","2025-11-11","2025-11-18","2025-11-25","2025-12-02","2025-12-09","2025-12-16","2025-12-23","2025-12-30"],"book":[100.0,100.82,101.16,100.89,102.68,102.02,104.45,103.71,104.39,104.4,103.97,105.26,103.14,104.43,104.2,103.31,104.58,104.92,105.13,105.68,103.07,101.13,103.13,103.53,104.78,104.62,103.57,101.26,99.95,100.23,98.44,98.65,99.89,99.48,99.45,101.96,101.63,101.69,102.22,102.63,101.17,99.86,96.71,94.2,93.0,93.03,91.74,93.68,93.58,92.94,91.66,93.46,93.77,95.0,96.07,95.45,94.95,94.16,94.21,91.85,92.95,94.1,95.87,96.98,97.26,96.07,100.1,100.36,101.56,104.21,101.58,103.4,105.84,109.8,108.67,109.44,111.78,113.15,113.94,114.16,112.38,114.46,114.87,118.95,121.04,123.54,119.35,117.26,114.36,117.85,118.93,122.99,124.16,123.35,124.13,122.78,122.84,125.51,126.38,125.68,128.17,131.46,130.09,127.07,128.41],"benchmark":[100.0,100.7,100.28,100.39,104.45,104.8,106.79,106.36,106.14,106.52,105.0,106.14,103.97,104.48,103.75,103.58,105.15,107.16,107.68,108.84,106.5,103.8,105.69,105.8,105.28,106.17,104.26,101.0,99.52,101.24,98.68,98.65,99.78,99.73,99.32,101.16,99.57,99.92,98.51,99.37,99.73,98.52,95.06,92.53,90.79,89.53,87.69,90.02,89.38,88.91,86.96,89.1,88.36,89.68,89.28,89.1,88.6,85.98,85.7,84.87,86.75,87.65,89.34,90.77,89.75,90.17,93.62,94.73,96.34,99.18,96.77,99.04,103.59,106.6,105.55,104.78,108.35,109.62,110.82,110.3,108.17,108.44,110.74,116.54,120.59,124.58,118.52,116.88,111.51,115.11,114.84,118.0,119.75,118.39,120.18,118.04,117.93,120.28,123.15,122.91,124.68,127.24,124.34,122.39,123.93]}}};
+
+document.querySelectorAll("[data-gh]").forEach(a => a.href = `https://github.com/${GH_USER}/${a.dataset.gh}`);
+const root = document.documentElement;
+// email: copy / Gmail / mail app (mailto alone does nothing when no mail app is set up)
+const EMAIL = "rddyyashuu027@gmail.com";
+function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 2200); }
+async function copyEmail() {
+  let ok = false;
+  try { await navigator.clipboard.writeText(EMAIL); ok = true; } catch (e) {
+    const ta = document.createElement("textarea"); ta.value = EMAIL; ta.style.position = "fixed"; ta.style.opacity = 0; document.body.appendChild(ta); ta.select();
+    try { ok = document.execCommand("copy"); } catch (e2) {} ta.remove();
+  }
+  toast(ok ? "Copied " + EMAIL : EMAIL);
+}
+const mailWrap = document.querySelector(".mailwrap"), mailBtn = document.querySelector("[data-mail]");
+mailBtn.addEventListener("click", e => { e.stopPropagation(); const open = mailWrap.classList.toggle("open"); mailBtn.setAttribute("aria-expanded", open); });
+document.addEventListener("click", e => { if (!mailWrap.contains(e.target)) { mailWrap.classList.remove("open"); mailBtn.setAttribute("aria-expanded", false); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape") mailWrap.classList.remove("open"); });
+document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", e => { e.preventDefault(); copyEmail(); mailWrap.classList.remove("open"); }));
+// in-page links: scroll with JS so they work from a local file, a preview, or GitHub Pages
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", e => {
+  const id = a.getAttribute("href").slice(1), target = id ? document.getElementById(id) : null;
+  if (a.hasAttribute("data-copy")) return;
+  if (!target && id) return;
+  e.preventDefault();
+  const y = target && id !== "top" ? target.getBoundingClientRect().top + window.scrollY - 70 : 0;
+  window.scrollTo({ top: y, behavior: "smooth" });
+  try { history.replaceState(null, "", "#" + id); } catch (err) {}
+}));
+// highlight the menu item for the section on screen
+const navLinks = [...document.querySelectorAll("nav .links a")];
+const spy = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  navLinks.forEach(l => l.classList.toggle("active", l.getAttribute("href") === "#" + e.target.id ||
+    (e.target.id === "disputes" && l.getAttribute("href") === "#ach")));
+}), { rootMargin: "-45% 0px -50% 0px" });
+["method", "impact", "ach", "disputes", "invest", "projects"].forEach(id => document.getElementById(id) && spy.observe(document.getElementById(id)));
+
+// ticker tape of results
+const TAPE = [["ACH RETURNS","2.8% → 2.2%","▼"],["DISPUTE DAYS","12.4 → 10.1","▼"],["REOPEN RATE","9.1% → 7.4%","▼"],
+  ["CLAIM DENIALS","8.6% → 7.2%","▼"],["ONBOARDING HRS","38 → 29","▼"],["AGED RECON BREAKS","−21%","▼"],
+  ["FORECAST ACCURACY","83% → 90%","▲"],["REPORTING HRS / WK","11 → 5","▼"],["ENCOUNTER COMPLETENESS","94% → 97%","▲"]];
+const tapeHtml = TAPE.map(([k, v, d]) => `<span>${k} <b>${v}</b> <i class="${d === "▲" ? "up" : "dn"}">${d}</i></span>`).join("");
+document.getElementById("tape").innerHTML = tapeHtml + tapeHtml;
+document.addEventListener("pointermove", e => {
+  const c = e.target.closest && e.target.closest(".card,.case,.dash"); if (!c) return;
+  const r = c.getBoundingClientRect(); c.style.setProperty("--mx", e.clientX - r.left + "px"); c.style.setProperty("--my", e.clientY - r.top + "px");
+});
+
+// typed rotator
+const words = ["ACH returns", "card disputes", "reconciliation", "KYC onboarding", "claim denials"];
+let wi = 0; const typed = document.getElementById("typed");
+setInterval(() => { wi = (wi + 1) % words.length; typed.textContent = words[wi]; }, 2200);
+
+const css = v => getComputedStyle(root).getPropertyValue(v).trim();
+const NS = "http://www.w3.org/2000/svg";
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; };
+const tip = document.getElementById("tip");
+const hover = (node, html) => {
+  node.addEventListener("mousemove", ev => { tip.innerHTML = html; tip.style.opacity = 1; tip.style.left = ev.clientX + 12 + "px"; tip.style.top = ev.clientY + 12 + "px"; });
+  node.addEventListener("mouseleave", () => tip.style.opacity = 0);
+};
+const fmt = n => n.toLocaleString("en-US");
+
+// counters
+function countUp(span) {
+  const from = +span.dataset.from, to = +span.dataset.count, dec = +span.dataset.dec, t0 = performance.now();
+  const step = now => { const p = Math.max(0, Math.min(1, (now - t0) / 1600)), e = 1 - Math.pow(1 - p, 3);
+    span.textContent = (from + (to - from) * e).toFixed(dec); if (p < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+setTimeout(() => document.querySelectorAll("[data-count]").forEach(countUp), 500);
+
+// reveal + chart triggers
+const drawn = new Set();
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add("in");
+  e.target.querySelectorAll(".ba").forEach(b => {
+    const m = +b.dataset.max;
+    b.querySelector(".before").style.width = (100 * b.dataset.b / m) + "%";
+    setTimeout(() => b.querySelector(".after").style.width = (100 * b.dataset.a / m) + "%", 500);
+  });
+  e.target.querySelectorAll("svg[id]").forEach(s => { if (!drawn.has(s.id) && charts[s.id]) { drawn.add(s.id); charts[s.id](s); } });
+  io.unobserve(e.target);
+}), { threshold: 0, rootMargin: "0px 0px -12% 0px" });
+document.querySelectorAll(".reveal").forEach(n => io.observe(n));
+
+function grow(rect, attr, to, delay) {
+  rect.setAttribute(attr, 0);
+  setTimeout(() => { const t0 = performance.now(); const f = now => { const p = Math.max(0, Math.min(1, (now - t0) / 900)), e = 1 - Math.pow(1 - p, 3);
+    rect.setAttribute(attr, to * e); if (attr === "height") rect.setAttribute("y", rect._base - to * e); if (p < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }, delay);
+}
+
+const charts = {
+  bookline(svg) {
+    const d = DATA.invest.line, n = d.book.length, L = 34, R = 450, T = 12, B = 220;
+    const all = d.book.concat(d.benchmark), lo = Math.min(...all) - 3, hi = Math.max(...all) + 3;
+    const X = i => L + (R - L) * i / (n - 1), Y = v => B - (B - T) * (v - lo) / (hi - lo);
+    [100, 110, 120, 130].filter(v => v > lo && v < hi).forEach(v => { el("line", { x1: L, x2: R, y1: Y(v), y2: Y(v), stroke: css("--line") }, svg);
+      el("text", { x: L - 6, y: Y(v) + 4, "text-anchor": "end" }, svg).textContent = v; });
+    [0, Math.floor(n / 2), n - 1].forEach(i => el("text", { x: X(i), y: B + 16, "text-anchor": "middle" }, svg).textContent = d.dates[i].slice(0, 7));
+    const area = el("path", { d: `M${X(0)} ${B} ` + d.book.map((v, i) => `L${X(i)} ${Y(v)}`).join(" ") + ` L${X(n - 1)} ${B}Z`, fill: css("--teal"), opacity: 0 }, svg);
+    area.style.transition = "opacity 1s 1.4s"; requestAnimationFrame(() => area.setAttribute("opacity", .12));
+    [[d.benchmark, css("--grey"), 2], [d.book, css("--teal"), 2.5]].forEach(([vals, c, w]) => {
+      const pth = el("path", { d: "M" + vals.map((v, i) => X(i) + " " + Y(v)).join(" L"), fill: "none", stroke: c, "stroke-width": w }, svg);
+      const len = pth.getTotalLength(); pth.style.strokeDasharray = len; pth.style.strokeDashoffset = len;
+      pth.style.transition = "stroke-dashoffset 1.8s ease"; requestAnimationFrame(() => pth.style.strokeDashoffset = 0);
+    });
+    el("text", { x: R, y: Y(d.book[n - 1]) - 8, "text-anchor": "end", class: "lbl" }, svg).textContent = "client book " + d.book[n - 1];
+    el("text", { x: R, y: Y(d.benchmark[n - 1]) + 16, "text-anchor": "end" }, svg).textContent = "market " + d.benchmark[n - 1];
+    const vline = el("line", { y1: T, y2: B, stroke: css("--ink-2"), "stroke-dasharray": "3 3", opacity: 0 }, svg);
+    const dot = el("circle", { r: 4, fill: css("--teal"), opacity: 0 }, svg);
+    const hit = el("rect", { x: L, y: T, width: R - L, height: B - T, fill: "transparent" }, svg);
+    hit.addEventListener("mousemove", ev => {
+      const r = svg.getBoundingClientRect(), sx = (ev.clientX - r.left) * 460 / r.width;
+      const i = Math.max(0, Math.min(n - 1, Math.round((sx - L) / (R - L) * (n - 1))));
+      vline.setAttribute("x1", X(i)); vline.setAttribute("x2", X(i)); vline.setAttribute("opacity", 1);
+      dot.setAttribute("cx", X(i)); dot.setAttribute("cy", Y(d.book[i])); dot.setAttribute("opacity", 1);
+      tip.innerHTML = `week of ${d.dates[i]}<br>client book <b>${d.book[i]}</b> · market ${d.benchmark[i]}`;
+      tip.style.opacity = 1; tip.style.left = ev.clientX + 12 + "px"; tip.style.top = ev.clientY + 12 + "px";
+    });
+    hit.addEventListener("mouseleave", () => { tip.style.opacity = 0; vline.setAttribute("opacity", 0); dot.setAttribute("opacity", 0); });
+  },
+  policy(svg) {
+    const d = DATA.invest.policy, B = 210, bw = 120;
+    d.forEach((r, i) => { const x = 40 + i * (bw + 30), h = 180 * r.out_of_band_pct / 100;
+      const rc = el("rect", { x, width: bw, rx: 6, fill: r.rebalance_policy === "Quarterly" ? css("--teal") : css("--red"), opacity: r.rebalance_policy === "Annual" ? .7 : 1 }, svg);
+      rc._base = B; grow(rc, "height", Math.max(h, 2), i * 150);
+      hover(rc, `${r.rebalance_policy}: ${fmt(r.accounts)} accounts<br>avg drift ${r.avg_abs_drift_pts} pts`);
+      const t = el("text", { x: x + bw / 2, y: B - h - 8, "text-anchor": "middle", class: "lbl", opacity: 0 }, svg); t.textContent = r.out_of_band_pct + "%";
+      setTimeout(() => t.setAttribute("opacity", 1), 800 + i * 150);
+      el("text", { x: x + bw / 2, y: B + 18, "text-anchor": "middle" }, svg).textContent = "rebalances: " + r.rebalance_policy.toLowerCase();
+    });
+  },
+  drifthist(svg) { svg._ready = true; driftSim(); },
+  pareto(svg) {
+    const d = DATA.ach.pareto, W = 460, H = 250, L = 34, B = 220, T = 14, bw = (W - L) / d.length;
+    const max = d[0].returns;
+    [0, 50, 100].forEach(p => { el("line", { x1: L, x2: W, y1: B - (B - T) * p / 100, y2: B - (B - T) * p / 100, stroke: css("--line") }, svg);
+      el("text", { x: W, y: B - (B - T) * p / 100 - 3, "text-anchor": "end" }, svg).textContent = p + "%"; });
+    let pts = [];
+    d.forEach((r, i) => {
+      const h = (B - T) * r.returns / max, x = L + i * bw + 4;
+      const rc = el("rect", { x, width: bw - 8, rx: 3, fill: r.return_category === "Administrative" ? css("--red") : css("--navy"), opacity: .9 }, svg);
+      rc._base = B; grow(rc, "height", h, i * 70);
+      hover(rc, `<b>${r.return_code}</b> ${r.description}<br>${fmt(r.returns)} returns · ${r.share_pct}%`);
+      el("text", { x: x + (bw - 8) / 2, y: B + 14, "text-anchor": "middle" }, svg).textContent = r.return_code;
+      pts.push([x + (bw - 8) / 2, B - (B - T) * r.cumulative_pct / 100]);
+    });
+    const path = el("path", { d: "M" + pts.map(p => p.join(" ")).join(" L"), fill: "none", stroke: css("--teal"), "stroke-width": 2.5 }, svg);
+    const len = path.getTotalLength(); path.style.strokeDasharray = len; path.style.strokeDashoffset = len;
+    path.style.transition = "stroke-dashoffset 1.6s ease .8s"; requestAnimationFrame(() => path.style.strokeDashoffset = 0);
+    pts.forEach((p, i) => { const c = el("circle", { cx: p[0], cy: p[1], r: 3.5, fill: css("--teal"), opacity: 0 }, svg); setTimeout(() => c.setAttribute("opacity", 1), 900 + i * 120); });
+  },
+  segments(svg) {
+    const d = DATA.ach.segments, top = 14, rowH = 230 / d.length, L = 168, max = 10;
+    d.forEach((r, i) => {
+      const y = top + i * rowH, bad = r.validation === "Not validated";
+      el("text", { x: 0, y: y + rowH / 2 - 1 }, svg).textContent = r.origination_channel;
+      el("text", { x: 0, y: y + rowH / 2 + 12, fill: bad ? css("--red") : css("--teal") }, svg).textContent = r.validation;
+      const rc = el("rect", { x: L, y: y + 6, height: rowH - 14, rx: 4, fill: bad ? css("--red") : css("--teal") }, svg);
+      grow(rc, "width", (440 - L - 40) * r.total_return_pct / max, i * 90);
+      const t = el("text", { x: L + (440 - L - 40) * r.total_return_pct / max + 6, y: y + rowH / 2 + 4, class: "lbl", opacity: 0 }, svg);
+      t.textContent = r.total_return_pct + "%"; setTimeout(() => t.setAttribute("opacity", 1), 900 + i * 90);
+      hover(rc, `${r.origination_channel} · first debit · ${r.validation}<br>${fmt(r.entries)} entries · admin returns ${r.admin_return_pct}%`);
+    });
+  },
+  drivers(svg) {
+    const d = DATA.disputes.drivers, L = 40, B = 200, max = 20, bw = 400 / d.length;
+    [0, 5, 10, 15, 20].forEach(v => { const y = B - 180 * v / max; el("line", { x1: L, x2: 460, y1: y, y2: y, stroke: css("--line") }, svg);
+      el("text", { x: L - 6, y: y + 4, "text-anchor": "end" }, svg).textContent = v + "d"; });
+    d.slice().reverse().forEach((r, i) => {
+      const x = L + 10 + i * bw, good = r.intake === "Docs complete" && r.routing === "Routed correctly";
+      const h = 180 * r.avg_days / max;
+      const rc = el("rect", { x, width: bw - 24, rx: 5, fill: good ? css("--teal") : css("--red"), opacity: .35 + .65 * Math.min(1, r.share_pct / 20 + .3) }, svg);
+      rc._base = B; grow(rc, "height", h, i * 120);
+      hover(rc, `${r.intake} · ${r.routing}<br>${fmt(r.cases)} cases (${r.share_pct}%)<br>reopen ${r.reopen_rate_pct}%`);
+      const t = el("text", { x: x + (bw - 24) / 2, y: B - h - 6, "text-anchor": "middle", class: "lbl" }, svg); t.textContent = r.avg_days + "d";
+      el("text", { x: x + (bw - 24) / 2, y: B + 14, "text-anchor": "middle" }, svg).textContent = r.intake.replace("Docs ", "docs ");
+      el("text", { x: x + (bw - 24) / 2, y: B + 27, "text-anchor": "middle" }, svg).textContent = r.routing.replace(" correctly", " right").toLowerCase();
+    });
+  },
+  pmap(svg) { drawPmap(svg, "now"); },
+  forecast(svg) {
+    const f = DATA.disputes.forecast, y = f.actual, n = y.length, W = 920, H = 200, L = 40, T = 10;
+    const lo = Math.min(...y) * .9, hi = Math.max(...y) * 1.05, X = i => L + (W - L) * i / (n - 1), Y = v => T + (H - T) * (1 - (v - lo) / (hi - lo));
+    el("rect", { x: X(n - 12), y: T, width: X(n - 1) - X(n - 12), height: H - T, fill: css("--surface"), opacity: .8 }, svg);
+    el("text", { x: X(n - 12) + 6, y: T + 14 }, svg).textContent = "backtest window";
+    [lo, (lo + hi) / 2, hi].forEach(v => el("text", { x: L - 6, y: Y(v) + 4, "text-anchor": "end" }, svg).textContent = Math.round(v));
+    const line = (vals, start, color, w, dash) => {
+      const p = el("path", { d: "M" + vals.map((v, i) => X(start + i) + " " + Y(v)).join(" L"), fill: "none", stroke: color, "stroke-width": w, "stroke-dasharray": dash || "" }, svg);
+      if (!dash) { const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len; p.style.transition = "stroke-dashoffset 2s ease"; requestAnimationFrame(() => p.style.strokeDashoffset = 0); }
+      return p;
+    };
+    line(y, 0, css("--navy"), 2);
+    const bt = line(f.backtest[f.best], n - 12, css("--teal"), 3, "6 4"); bt.style.opacity = 0; bt.style.transition = "opacity .6s 1.8s"; requestAnimationFrame(() => bt.style.opacity = 1);
+    y.forEach((v, i) => { const c = el("circle", { cx: X(i), cy: Y(v), r: 6, fill: "transparent" }, svg); hover(c, `week of ${f.weeks[i]}<br>${fmt(v)} cases`); });
+    document.getElementById("fcnote").textContent = `Navy = actual weekly cases. Dashed teal = ${f.best}, ${f.accuracy[f.best]}% accurate over the last 12 weeks (naive ${f.accuracy["Naive (last week)"]}%, 4-week avg ${f.accuracy["4-week average"]}%). Next week needs about ${f.investigator_fte_needed} investigator FTE.`;
+  },
+  recon(svg) {
+    const d = DATA.recon.filter(r => r.break_type !== "Matched"), max = d[0].items;
+    d.forEach((r, i) => { const y = 6 + i * 22;
+      el("text", { x: 0, y: y + 12 }, svg).textContent = r.break_type;
+      const rc = el("rect", { x: 150, y, height: 15, rx: 3, fill: r.dollar_exposure > 0 ? css("--red") : css("--grey") }, svg);
+      grow(rc, "width", 190 * r.items / max, i * 100);
+      el("text", { x: 345, y: y + 12 }, svg).textContent = r.dollar_exposure ? "$" + Math.round(r.dollar_exposure / 1000) + "K" : "$0";
+    });
+  },
+  funnel(svg) {
+    const d = DATA.funnel;
+    d.forEach((r, i) => { const w = 390 * r.pct_of_start / 100, x = (400 - w) / 2, y = 4 + i * 23;
+      const rc = el("rect", { x, y, width: w, height: 19, rx: 4, fill: i === 3 ? css("--red") : css("--teal"), opacity: 0 }, svg);
+      rc.style.transition = `opacity .5s ${i * .15}s`; requestAnimationFrame(() => rc.setAttribute("opacity", .25 + .75 * (1 - i * .12)));
+      const t = el("text", { x: 200, y: y + 14, "text-anchor": "middle", class: "lbl" }, svg); t.textContent = `${r.stage} · ${r.pct_of_start}%`;
+    });
+  },
+  denial(svg) {
+    const d = DATA.denial; let a0 = -Math.PI / 2; const cx = 60, cy = 60, R = 52, r0 = 30;
+    d.forEach((r, i) => { const a1 = a0 + 2 * Math.PI * r.share_pct / 100;
+      const p = [[cx + R * Math.cos(a0), cy + R * Math.sin(a0)], [cx + R * Math.cos(a1), cy + R * Math.sin(a1)], [cx + r0 * Math.cos(a1), cy + r0 * Math.sin(a1)], [cx + r0 * Math.cos(a0), cy + r0 * Math.sin(a0)]];
+      const lg = a1 - a0 > Math.PI ? 1 : 0;
+      const s = el("path", { d: `M${p[0]} A${R} ${R} 0 ${lg} 1 ${p[1]} L${p[2]} A${r0} ${r0} 0 ${lg} 0 ${p[3]}Z`, fill: r.preventable ? css("--red") : css("--grey"), stroke: css("--surface"), "stroke-width": 2, opacity: 0 }, svg);
+      s.style.transition = `opacity .4s ${i * .12}s`; requestAnimationFrame(() => s.setAttribute("opacity", 1));
+      hover(s, `${r.carc} ${r.description} · ${r.share_pct}%`); a0 = a1; });
+    el("text", { x: cx, y: cy + 5, "text-anchor": "middle", class: "lbl" }, svg).textContent = "69%";
+    el("rect", { x: 140, y: 30, width: 12, height: 12, fill: css("--red"), rx: 2 }, svg); el("text", { x: 158, y: 40 }, svg).textContent = "Preventable (CO-16, CO-197, CO-18, CO-29)";
+    el("rect", { x: 140, y: 58, width: 12, height: 12, fill: css("--grey"), rx: 2 }, svg); el("text", { x: 158, y: 68 }, svg).textContent = "Clinical / patient (CO-50, CO-97, PR-1)";
+  },
+  docs(svg) {
+    ["BRD", "Process map", "RTM", "UAT", "KPI dict."].forEach((t, i) => { const x = 8 + i * 78;
+      const g = el("g", { opacity: 0 }, svg); g.style.transition = `opacity .4s ${i * .15}s, transform .4s ${i * .15}s`; g.style.transform = "translateY(10px)";
+      el("rect", { x, y: 14, width: 66, height: 86, rx: 6, fill: css("--surface-2"), stroke: css("--line") }, g);
+      [30, 40, 50, 60, 70].forEach((yy, j) => el("rect", { x: x + 10, y: yy, width: j % 2 ? 34 : 46, height: 4, rx: 2, fill: j === 0 ? css("--teal") : css("--grey") }, g));
+      el("text", { x: x + 33, y: 92, "text-anchor": "middle", class: "lbl" }, g).textContent = t;
+      requestAnimationFrame(() => { g.setAttribute("opacity", 1); g.style.transform = "none"; });
+      if (i < 4) el("path", { d: `M${x + 68} 57 L${x + 76} 57`, stroke: css("--teal"), "stroke-width": 2 }, svg);
+    });
+  },
+};
+
+// dispute process map with moving case dots
+let pmTimer;
+function drawPmap(svg, state) {
+  svg.innerHTML = ""; clearInterval(pmTimer);
+  const N = [{ id: "in", x: 10, y: 80, t: "Intake", cls: state === "now" ? "bad" : "good", sub: state === "now" ? "docs often missing" : "reason checklist" },
+             { id: "rt", x: 125, y: 80, t: "Routing", cls: state === "now" ? "bad" : "good", sub: state === "now" ? "manual, 11% wrong" : "reason-code table" },
+             { id: "inv", x: 240, y: 80, t: "Investigation", cls: "", sub: "" },
+             { id: "res", x: 355, y: 80, t: "Resolved", cls: "good", sub: "" }];
+  N.forEach(n => { const g = el("g", { class: "node " + n.cls }, svg); el("rect", { x: n.x, y: n.y, width: 95, height: 40, rx: 8 }, g);
+    el("text", { x: n.x + 47, y: n.y + 18, "text-anchor": "middle" }, g).textContent = n.t;
+    if (n.sub) { const s = el("text", { x: n.x + 47, y: n.y + 31, "text-anchor": "middle" }, g); s.textContent = n.sub; s.style.font = "10px Inter, sans-serif"; s.style.fill = css("--ink-2"); } });
+  [[105, 125], [220, 240], [335, 355]].forEach(([a, b]) => el("path", { d: `M${a} 100 L${b} 100` }, svg));
+  if (state === "now") {
+    el("path", { class: "loop", d: "M287 80 C287 20, 57 20, 57 80" }, svg);
+    el("text", { x: 172, y: 30, "text-anchor": "middle", fill: css("--red") }, svg).textContent = "evidence request loop · +2.3 days each";
+    el("path", { class: "loop", d: "M172 120 C172 170, 287 170, 287 120" }, svg);
+    el("path", { class: "loop", d: "M287 120 C287 190, 172 190, 172 120" }, svg);
+    el("text", { x: 230, y: 205, "text-anchor": "middle", fill: css("--red") }, svg).textContent = "misroute bounce · +2.8 days";
+  } else {
+    const fast = el("path", { d: "M57 120 C57 185, 402 185, 402 120", stroke: css("--teal"), "stroke-dasharray": "5 5", class: "loop" }, svg);
+    fast.style.stroke = css("--teal");
+    el("text", { x: 230, y: 200, "text-anchor": "middle", fill: css("--teal") }, svg).textContent = "fast-track lane · 16% of low-risk claims";
+  }
+  const spawn = () => {
+    const c = el("circle", { r: 5, fill: css("--navy"), cx: 57, cy: 100 }); svg.insertBefore(c, svg.firstChild);
+    const loops = state === "now" && Math.random() < .28; const t0 = performance.now(), dur = loops ? 5200 : 3200;
+    const f = now => { const p = (now - t0) / dur; if (p >= 1) { c.remove(); return; }
+      let x = 57 + (402 - 57) * p, y = 100;
+      if (loops && p > .55 && p < .8) { const q = (p - .55) / .25; x = 287 - (287 - 57) * q; y = 100 - 60 * Math.sin(Math.PI * q); c.setAttribute("fill", css("--red")); }
+      if (loops && p >= .8) { x = 57 + (402 - 57) * ((p - .8) / .2); c.setAttribute("fill", css("--red")); }
+      c.setAttribute("cx", x); c.setAttribute("cy", y); requestAnimationFrame(f); };
+    requestAnimationFrame(f);
+  };
+  spawn(); pmTimer = setInterval(spawn, 700);
+}
+const FLOWSTAT = {
+  now: ["avg <b>9.6</b> days", "<b>36%</b> over SLA", "reopen <b>5.9%</b>"],
+  future: ["avg <b>9.1</b> days", "<b>32%</b> over SLA", "reopen <b>4.9%</b>", "<b>16%</b> fast-tracked"],
+};
+function showFlow(s) {
+  const svg = document.getElementById("pmap");
+  document.querySelectorAll("#ptabs button").forEach(x => { const on = x.dataset.s === s; x.classList.toggle("on", on); x.setAttribute("aria-selected", on); });
+  svg.style.opacity = 0;
+  setTimeout(() => { drawPmap(svg, s); svg.style.opacity = 1; }, 220);
+  document.getElementById("flowstat").innerHTML = FLOWSTAT[s].map(x => `<span>${x}</span>`).join("");
+}
+document.querySelectorAll("#ptabs button").forEach(b => b.onclick = () => { b.closest(".panel").classList.add("used"); showFlow(b.dataset.s); });
+document.getElementById("flowstat").innerHTML = FLOWSTAT.now.map(x => `<span>${x}</span>`).join("");
+
+
+
+// ---- interaction helpers ----
+function fill(r) { r.style.setProperty("--p", (100 * (r.value - r.min) / (r.max - r.min)) + "%"); }
+function setText(id, text) {
+  const e = document.getElementById(id); if (e.textContent === text) return;
+  e.textContent = text; e.classList.remove("bump"); void e.offsetWidth; e.classList.add("bump");
+}
+document.querySelectorAll('input[type=range]').forEach(r => {
+  fill(r);
+  r.addEventListener("input", () => { fill(r); r.closest(".panel").classList.add("used"); });
+});
+
+// drift band simulator
+const IV = DATA.invest;
+function driftSim() {
+  const band = +document.getElementById("band").value, pts = IV.drift_points, svg = document.getElementById("drifthist");
+  document.getElementById("bandv").textContent = band;
+  const flagged = pts.filter(v => Math.abs(v) > band).length;
+  setText("iv-flag", fmt(flagged)); document.getElementById("iv-flagbar").style.width = (100 * flagged / pts.length) + "%";
+  document.getElementById("iv-flag2").textContent = (100 * flagged / pts.length).toFixed(1) + "% of accounts";
+  setText("iv-adv", (flagged / 40).toFixed(0));
+  const riskAfter = 100 * IV.risk_flags.filter(([d, now, reb]) => Math.abs(d) > band ? reb : now).length / IV.risk_flags.length;
+  setText("iv-risk", riskAfter.toFixed(1) + "%");
+  document.getElementById("iv-risk2").textContent = "from " + IV.summary.too_risky_pct + "% today";
+  if (!svg._ready) return;
+  svg.innerHTML = "";
+  const lo = -25, hi = 30, bins = {}; pts.forEach(v => { const b = Math.max(lo, Math.min(hi - 1, Math.floor(v))); bins[b] = (bins[b] || 0) + 1; });
+  const max = Math.max(...Object.values(bins)), X = v => 10 + 440 * (v - lo) / (hi - lo), bw = 440 / (hi - lo);
+  for (let b = lo; b < hi; b++) { const c = bins[b] || 0, h = 130 * c / max, out = Math.abs(b + .5) > band;
+    el("rect", { x: X(b) + .5, y: 140 - h, width: bw - 1, height: h, rx: 1.5, fill: out ? css("--red") : css("--teal"), opacity: out ? .9 : .75 }, svg); }
+  el("rect", { x: X(-band), y: 4, width: X(band) - X(-band), height: 136, fill: css("--teal"), opacity: .06 }, svg);
+  [-20, -10, 0, 10, 20].forEach(v => el("text", { x: X(v), y: 158, "text-anchor": "middle" }, svg).textContent = (v > 0 ? "+" : "") + v);
+}
+document.getElementById("band").oninput = driftSim; driftSim();
+
+// ACH business case simulator
+const A = DATA.ach.sim;
+function achSim() {
+  const cost = +costEl.value, fee = +feeEl.value, vol = +volEl.value;
+  const lift = A.avoided_per_validation;                // returns avoided per validation performed
+  const avoided = vol * 12 * lift, net = avoided * cost - vol * 12 * fee;
+  document.getElementById("costv").textContent = "$" + cost.toFixed(2);
+  document.getElementById("feev").textContent = "$" + fee.toFixed(2);
+  document.getElementById("volv").textContent = fmt(vol);
+  const netEl = document.getElementById("net");
+  setText("net", (net < 0 ? "−$" : "$") + fmt(Math.abs(Math.round(net))));
+  netEl.className = "big " + (net >= 0 ? "pos" : "neg");
+  setText("avoid", fmt(Math.round(avoided)));
+  setText("be", "$" + (fee / lift).toFixed(2));
+}
+const costEl = document.getElementById("cost"), feeEl = document.getElementById("fee"), volEl = document.getElementById("vol");
+[costEl, feeEl, volEl].forEach(e => e.oninput = achSim); achSim();
+
+// dispute simulator, using the OLS coefficients and segment sizes from the analysis
+const S = DATA.disputes.sim;
+function dispSim() {
+  const f1 = document.getElementById("f1").value / 100, f2 = document.getElementById("f2").value / 100;
+  document.getElementById("f1v").textContent = Math.round(f1 * 100) + "%";
+  document.getElementById("f2v").textContent = Math.round(f2 * 100) + "%";
+  const saved = S.missing_cases * f1 * S.avg_evidence_requests * S.coef_evidence + S.misrouted_cases * f2 * S.coef_misroute;
+  const days = S.avg_days - saved / S.cases;
+  const reopen = S.reopen - 100 * (S.missing_cases * f1 * (S.reopen_missing - S.reopen_clean) + S.misrouted_only * f2 * (S.reopen_misrouted - S.reopen_clean)) / 100 / S.cases;
+  setText("sdays", days.toFixed(2)); const sc = v => Math.max(4, 100 * (v - 7) / 3) + "%"; document.getElementById("sdaysbar").style.width = sc(days); document.getElementById("sdaysnow").style.width = sc(S.avg_days);
+  document.getElementById("sdays2").textContent = "▼ " + (S.avg_days - days).toFixed(2) + " days vs today";
+  setText("sreo", reopen.toFixed(2) + "%");
+  document.getElementById("sreo2").textContent = "▼ " + (S.reopen - reopen).toFixed(2) + " pts vs today";
+  setText("ssaved", fmt(Math.round(saved)));
+}
+["f1", "f2"].forEach(id => document.getElementById(id).oninput = dispSim); dispSim();
+</script>
+</body>
+</html>
