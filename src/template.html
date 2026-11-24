@@ -392,8 +392,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
 </div></section>
 
 <section id="projects"><div class="wrap">
-  <div class="reveal"><div class="sec-tag">More projects</div><h2>A few smaller ones</h2></div>
+  <div class="reveal"><div class="sec-tag">More projects</div><h2>More projects: machine learning, AI and smaller analyses</h2></div>
   <div class="pgrid">
+    <a class="card pcard reveal" data-gh="customer-attrition-model" href="#" style="color:inherit;text-decoration:none">
+      <span class="chip hl" style="align-self:flex-start">Machine learning · scikit-learn</span><h3>Customer Attrition Model</h3>
+      <svg viewBox="0 0 400 120" id="mlcurve"></svg>
+      <p>Predicts which deposit customers will leave in 12 months. The simple scorecard beat gradient boosting, and it's explainable. Calling everyone loses $386K. Calling the riskiest 17% makes $125K.</p>
+    </a>
+    <a class="card pcard reveal" data-gh="complaint-triage-ai" href="#" style="color:inherit;text-decoration:none">
+      <span class="chip hl" style="align-self:flex-start">AI · NLP · human-in-the-loop</span><h3>AI Complaint Triage</h3>
+      <svg viewBox="0 0 400 120" id="aibars"></svg>
+      <p>Reads complaints, routes them, and flags compliance risk. My first test said 100% accurate, which was wrong. Tested properly it was 68%. Agent feedback got it to 84%, and the rest go to a person.</p>
+    </a>
     <a class="card pcard reveal" data-gh="payment-reconciliation-breaks" href="#" style="color:inherit;text-decoration:none">
       <span class="chip hl" style="align-self:flex-start">Finance ops · SQL</span><h3>Payment Reconciliation Break Analyzer</h3>
       <svg viewBox="0 0 400 120" id="recon"></svg>
@@ -423,7 +433,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
     <div class="card reveal"><h4>Analysis</h4><div><span class="chip">SQL · CTEs · windows</span><span class="chip">Python · pandas</span><span class="chip">Excel</span><span class="chip">Forecasting</span></div></div>
     <div class="card reveal"><h4>Reporting</h4><div><span class="chip">Power BI · DAX</span><span class="chip">Tableau</span><span class="chip">KPI design</span></div></div>
     <div class="card reveal"><h4>Requirements</h4><div><span class="chip">BRD / FRD</span><span class="chip">User stories</span><span class="chip">UAT</span><span class="chip">BPMN</span><span class="chip">JIRA</span></div></div>
-    <div class="card reveal"><h4>Domain</h4><div><span class="chip">ACH / NACHA</span><span class="chip">Reg E / Reg Z</span><span class="chip">KYC / CIP</span><span class="chip">X12 837/835</span><span class="chip">Equities · rebalancing</span><span class="chip">Suitability</span></div></div>
+    <div class="card reveal"><h4>Domain</h4><div><span class="chip">ACH / NACHA</span><span class="chip">Reg E / Reg Z</span><span class="chip">KYC / CIP</span><span class="chip">X12 837/835</span><span class="chip">Equities · rebalancing</span><span class="chip">scikit-learn</span><span class="chip">NLP</span><span class="chip">Suitability</span></div></div>
   </div>
 </div></section>
 
@@ -530,6 +540,28 @@ function grow(rect, attr, to, delay) {
 }
 
 const charts = {
+  mlcurve(svg) {
+    const c = DATA.ml.curve, vals = c.map(d => d.net_value), lo = Math.min(...vals), hi = Math.max(...vals);
+    const X = i => 10 + 380 * i / (c.length - 1), Y = v => 10 + 90 * (hi - v) / (hi - lo);
+    el("line", { x1: 10, x2: 390, y1: Y(0), y2: Y(0), stroke: css("--red"), "stroke-dasharray": "3 3", opacity: .7 }, svg);
+    el("text", { x: 392, y: Y(0) - 4, "text-anchor": "end" }, svg).textContent = "break-even";
+    const pth = el("path", { d: "M" + vals.map((v, i) => X(i) + " " + Y(v)).join(" L"), fill: "none", stroke: css("--teal"), "stroke-width": 2.5 }, svg);
+    const len = pth.getTotalLength(); pth.style.strokeDasharray = len; pth.style.strokeDashoffset = len; pth.style.transition = "stroke-dashoffset 1.6s ease"; requestAnimationFrame(() => pth.style.strokeDashoffset = 0);
+    const b = DATA.ml.best, bi = b.pct_contacted - 1;
+    const dot = el("circle", { cx: X(bi), cy: Y(b.net_value), r: 5, fill: css("--teal"), opacity: 0 }, svg); dot.style.transition = "opacity .4s 1.5s"; requestAnimationFrame(() => dot.setAttribute("opacity", 1));
+    el("text", { x: X(bi) + 8, y: Y(b.net_value) + 4, class: "lbl" }, svg).textContent = `call top ${b.pct_contacted}% → +$${Math.round(b.net_value / 1000)}K`;
+    el("text", { x: 390, y: 116, "text-anchor": "end" }, svg).textContent = "call everyone → −$" + Math.round(-vals[vals.length - 1] / 1000) + "K";
+  },
+  aibars(svg) {
+    const d = DATA.ai, rows = [["v1 words", d.v1_word_accuracy_pct], ["v2 + typos", d.v2_typo_tolerant_accuracy_pct], ["v3 + agent feedback", d.routing_accuracy_pct]];
+    rows.forEach(([k, v], i) => { const y = 8 + i * 34;
+      el("text", { x: 0, y: y + 15 }, svg).textContent = k;
+      const rc = el("rect", { x: 130, y, height: 22, rx: 4, fill: i === 2 ? css("--teal") : css("--grey") }, svg);
+      grow(rc, "width", 220 * v / 100, i * 200);
+      const tx = el("text", { x: 130 + 220 * v / 100 + 6, y: y + 15, class: "lbl", opacity: 0 }, svg); tx.textContent = v + "%";
+      setTimeout(() => tx.setAttribute("opacity", 1), 900 + i * 200);
+    });
+  },
   bookline(svg) {
     const d = DATA.invest.line, n = d.book.length, L = 34, R = 450, T = 12, B = 220;
     const all = d.book.concat(d.benchmark), lo = Math.min(...all) - 3, hi = Math.max(...all) + 3;
@@ -795,6 +827,12 @@ function dispSim() {
   setText("ssaved", fmt(Math.round(saved)));
 }
 ["f1", "f2"].forEach(id => document.getElementById(id).oninput = dispSim); dispSim();
+// safety net: also draw each chart as soon as the chart itself is on screen
+const chartIO = new IntersectionObserver(es => es.forEach(e => {
+  const s = e.target; if (!e.isIntersecting || drawn.has(s.id) || !charts[s.id]) return;
+  drawn.add(s.id); charts[s.id](s); chartIO.unobserve(s);
+}), { threshold: 0 });
+document.querySelectorAll("svg[id]").forEach(s => charts[s.id] && chartIO.observe(s));
 </script>
 </body>
 </html>

@@ -12,6 +12,8 @@ dsp = json.loads((P / "card-dispute-backlog/results/results.json").read_text())
 recon = json.loads((P / "payment-reconciliation-breaks/results.json").read_text())
 denial = json.loads((P / "claim-denial-root-cause/results.json").read_text())
 funnel = json.loads((P / "account-onboarding-funnel/results.json").read_text())
+ml = json.loads((P / "customer-attrition-model/results/results.json").read_text())
+ai = json.loads((P / "complaint-triage-ai/results/results.json").read_text())
 inv = json.loads((P / "portfolio-drift-risk-monitor/results/results.json").read_text())
 
 sim = ach["05_rule_simulation"][0]
@@ -43,6 +45,8 @@ data = {
     "recon": recon,
     "denial": denial["denial_by_carc"],
     "funnel": funnel["funnel"],
+    "ml": {"curve": ml["decision_curve"], "best": ml["best_contact"]},
+    "ai": {k: v for k, v in ai.items() if k.endswith("_pct")},
     "invest": {"summary": inv["summary"], "policy": inv["01_drift_by_rebalance_policy"],
                "drift_points": inv["drift_points"], "risk_flags": inv["risk_flags"], "line": inv["book_vs_benchmark"]},
 }
